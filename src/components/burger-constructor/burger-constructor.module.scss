@@ -1,0 +1,35 @@
+.burger_constructor {
+	width: 600px;
+	height: 650;
+	margin-top: 60px;
+}
+
+.constructor_content {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.drug_element {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.constructor_extra_element {
+	margin-left: 30px;
+}
+
+.order_button_container {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	gap: 40px;
+	margin-top: 40px;
+	margin-right: 30px;
+}
+
+.order_button {
+	box-shadow: 0 4px 32px 0 #3333ff80, 0 0 8px 8px #3333ff40,
+		0 0 16px 8px #3333ff40;
+}

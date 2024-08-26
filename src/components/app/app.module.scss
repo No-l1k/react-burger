@@ -1,0 +1,15 @@
+.app {
+	display: grid;
+	grid-template-rows: auto 1fr;
+	grid-template-columns: 1fr;
+	justify-items: center;
+	min-height: 100vh;
+}
+
+.main {
+	display: grid;
+	grid-template-columns: repeat(2, auto);
+	gap: 50px;
+	margin-top: 40px;
+	margin-left: 30px;
+}

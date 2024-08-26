@@ -1,0 +1,39 @@
+.head {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100vw;
+	height: 88px;
+	background-color: #1c1c21;
+	box-shadow: 0 0 1px 0 #0000000a, 0 4px 8px 0 #0000000a,
+		0 16px 24px 0 #0000000a, 0 24px 32px 0 #0000000a;
+}
+
+.nav {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	max-height: 56px;
+
+	button {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		color: #8585ad;
+		background-color: #1c1c21;
+	}
+
+	button:hover {
+		color: #f2f2f3;
+	}
+}
+
+.nav_list {
+	display: flex;
+	gap: 50px;
+}
+
+.logo {
+	margin-right: 311px;
+	margin-left: 132px;
+}
