@@ -10,16 +10,16 @@ export const AppHeader = () => {
 	return (
 		<header className={s.head}>
 			<nav className={s.nav}>
-				<div className={`${s.nav_list} text text_type_main-default`}>
+				<div className={s.nav_list}>
 					<span className={s.nav_list_item}>
-						<button>
+						<button className='text text_type_main-default'>
 							{' '}
 							<BurgerIcon type='secondary' />
 							Конструктор
 						</button>
 					</span>
 					<span className={s.nav_list_item}>
-						<button>
+						<button className='text text_type_main-default'>
 							{' '}
 							<ListIcon type='secondary' />
 							Лента заказов

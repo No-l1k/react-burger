@@ -1,6 +1,5 @@
 .burger_constructor {
 	width: 600px;
-	height: 650;
 	margin-top: 60px;
 }
 
@@ -8,6 +7,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
+	margin-bottom: 16px;
 }
 
 .drug_element {
@@ -17,6 +17,7 @@
 }
 
 .constructor_extra_element {
+	margin-bottom: 16px;
 	margin-left: 30px;
 }
 
@@ -25,11 +26,20 @@
 	justify-content: flex-end;
 	align-items: center;
 	gap: 40px;
-	margin-top: 40px;
+	margin-top: 24px;
 	margin-right: 30px;
 }
 
 .order_button {
 	box-shadow: 0 4px 32px 0 #3333ff80, 0 0 8px 8px #3333ff40,
 		0 0 16px 8px #3333ff40;
+}
+
+.scroll {
+	width: 590px !important;
+	height: 480px !important;
+}
+
+.thumb {
+	background-color: #8585ad !important;
 }

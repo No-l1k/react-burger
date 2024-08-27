@@ -3,30 +3,17 @@ import {
 	CurrencyIcon,
 	Tab,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import s from './burger-ingredients.module.scss';
 import React from 'react';
+import s from './burger-ingredients.module.scss';
 import { ingredientsData } from '../../utils/data';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-
-interface Ingredient {
-	_id: string;
-	name: string;
-	type: 'bun' | 'sauce' | 'main';
-	price: number;
-	image: string;
-}
-
-interface IngredientGroup {
-	bun: Ingredient[];
-	sauce: Ingredient[];
-	main: Ingredient[];
-}
+import { IngredientType, IngredientGroup } from '../../utils/types';
 
 export const BurgerIngredients = () => {
 	const [current, setCurrent] = React.useState('one');
 
 	const rawIngredients: any[] = ingredientsData;
-	const ingredients: Ingredient[] = rawIngredients.map((ingredient) => ({
+	const ingredients: IngredientType[] = rawIngredients.map((ingredient) => ({
 		...ingredient,
 		type: ingredient.type as 'bun' | 'sauce' | 'main',
 	}));
@@ -53,9 +40,9 @@ export const BurgerIngredients = () => {
 			</div>
 			<div className={s.main_ingredients}>
 				<Scrollbars
-					style={{ width: 590, height: 700 }}
-					renderThumbVertical={({ style, ...props }) => (
-						<div {...props} style={{ ...style, backgroundColor: '#8585AD' }} />
+					className={s.scroll}
+					renderThumbVertical={({ ...props }) => (
+						<div {...props} className={s.thumb} />
 					)}>
 					<div className={s.ingredients_section}>
 						<p className='text text_type_main-medium'>Булки</p>

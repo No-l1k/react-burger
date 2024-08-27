@@ -8,45 +8,32 @@ import {
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { ingredientsData } from '../../utils/data';
 import s from './burger-constructor.module.scss';
-
-interface Ingredient {
-	_id: string;
-	name: string;
-	type: 'bun' | 'sauce' | 'main';
-	proteins: number;
-	fat: number;
-	carbohydrates: number;
-	calories: number;
-	price: number;
-	image: string;
-	image_mobile?: string;
-	image_large?: string;
-	__v?: number;
-}
+import { IngredientType } from '../../utils/types';
 
 export const BurgerConstructor = () => {
-	const ingredients: Ingredient[] = ingredientsData as Ingredient[];
+	const ingredients: IngredientType[] = ingredientsData as IngredientType[];
 
 	const topTypeIngredient = ingredients[0];
-	const bottomTypeIngredient = ingredients[ingredients.length - 1];
+	const bottomTypeIngredient = ingredients[0];
+
 	return (
 		<div className={s.burger_constructor}>
+			{topTypeIngredient && (
+				<ConstructorElement
+					extraClass={s.constructor_extra_element}
+					type='top'
+					isLocked={true}
+					text={`${topTypeIngredient.name} (верх)`}
+					price={topTypeIngredient.price}
+					thumbnail={topTypeIngredient.image}
+				/>
+			)}
 			<Scrollbars
-				style={{ width: 590, height: 656 }}
-				renderThumbVertical={({ style, ...props }) => (
-					<div {...props} style={{ ...style, backgroundColor: '#8585AD' }} />
+				className={s.scroll}
+				renderThumbVertical={({ ...props }) => (
+					<div {...props} className={s.thumb} />
 				)}>
 				<div className={s.constructor_content}>
-					{topTypeIngredient && (
-						<ConstructorElement
-							extraClass={s.constructor_extra_element}
-							type='top'
-							isLocked={true}
-							text={`${topTypeIngredient.name}`}
-							price={topTypeIngredient.price}
-							thumbnail={topTypeIngredient.image}
-						/>
-					)}
 					{ingredients.slice(1, -1).map((ingredient) => (
 						<div key={ingredient._id} className={s.drug_element}>
 							<DragIcon type='primary' />
@@ -57,18 +44,18 @@ export const BurgerConstructor = () => {
 							/>
 						</div>
 					))}
-					{bottomTypeIngredient && (
-						<ConstructorElement
-							extraClass={s.constructor_extra_element}
-							type='bottom'
-							isLocked={true}
-							text={`${bottomTypeIngredient.name}`}
-							price={bottomTypeIngredient.price}
-							thumbnail={bottomTypeIngredient.image}
-						/>
-					)}
 				</div>
 			</Scrollbars>
+			{bottomTypeIngredient && (
+				<ConstructorElement
+					extraClass={s.constructor_extra_element}
+					type='bottom'
+					isLocked={true}
+					text={`${bottomTypeIngredient.name} (низ)`}
+					price={bottomTypeIngredient.price}
+					thumbnail={bottomTypeIngredient.image}
+				/>
+			)}
 			<div className={s.order_button_container}>
 				<span className='text text_type_digits-medium'>
 					610

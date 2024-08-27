@@ -7,10 +7,10 @@ export const App = () => {
 	return (
 		<div className={s.app}>
 			<AppHeader />
-			<div className={s.main}>
+			<main className={s.main}>
 				<BurgerIngredients />
 				<BurgerConstructor />
-			</div>
+			</main>
 		</div>
 	);
 };
