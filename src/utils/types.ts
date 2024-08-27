@@ -13,6 +13,10 @@ export interface IngredientType {
 	__v?: number;
 }
 
+export interface IngredientsData {
+	ingredients: IngredientType[];
+}
+
 export interface IngredientGroup {
 	bun: IngredientType[];
 	sauce: IngredientType[];

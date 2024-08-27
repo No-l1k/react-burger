@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
 	Button,
 	ConstructorElement,
@@ -6,15 +6,26 @@ import {
 	DragIcon,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import { ingredientsData } from '../../utils/data';
 import s from './burger-constructor.module.scss';
-import { IngredientType } from '../../utils/types';
+import { IngredientsData } from '../../utils/types';
+import { Modal } from '../modal/modal';
+import { OrderDetails } from '../order-details/order-details';
 
-export const BurgerConstructor = () => {
-	const ingredients: IngredientType[] = ingredientsData as IngredientType[];
+export const BurgerConstructor: React.FC<IngredientsData> = ({
+	ingredients,
+}) => {
+	const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
 	const topTypeIngredient = ingredients[0];
 	const bottomTypeIngredient = ingredients[0];
+
+	const openOrderModal = () => {
+		setIsOrderModalOpen(true);
+	};
+
+	const closeOrderModal = () => {
+		setIsOrderModalOpen(false);
+	};
 
 	return (
 		<div className={s.burger_constructor}>
@@ -65,10 +76,16 @@ export const BurgerConstructor = () => {
 					htmlType='button'
 					type='primary'
 					size='large'
-					extraClass={s.order_button}>
+					extraClass={s.order_button}
+					onClick={openOrderModal}>
 					Оформить заказ
 				</Button>
 			</div>
+			{isOrderModalOpen && (
+				<Modal onClose={closeOrderModal}>
+					<OrderDetails />
+				</Modal>
+			)}
 		</div>
 	);
 };

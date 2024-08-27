@@ -3,6 +3,11 @@
 	margin-top: 60px;
 }
 
+.constructor_extra_element {
+	margin-bottom: 16px;
+	margin-left: 30px;
+}
+
 .constructor_content {
 	display: flex;
 	flex-direction: column;
@@ -14,11 +19,6 @@
 	display: flex;
 	align-items: center;
 	gap: 8px;
-}
-
-.constructor_extra_element {
-	margin-bottom: 16px;
-	margin-left: 30px;
 }
 
 .order_button_container {
