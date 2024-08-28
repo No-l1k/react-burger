@@ -13,6 +13,7 @@ import {
 } from '../../utils/types';
 import { Modal } from '../modal/modal';
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
+import { useModal } from '../../hooks/use-modal';
 
 export const BurgerIngredients: React.FC<IngredientsData> = ({
 	ingredients,
@@ -20,6 +21,7 @@ export const BurgerIngredients: React.FC<IngredientsData> = ({
 	const [current, setCurrent] = React.useState('one');
 	const [selectedIngredient, setSelectedIngredient] =
 		useState<IngredientType | null>(null);
+	const { isModalOpen, openModal, closeModal } = useModal();
 
 	const groupedIngredients: IngredientGroup = {
 		bun: ingredients.filter((item) => item.type === 'bun'),
@@ -29,10 +31,7 @@ export const BurgerIngredients: React.FC<IngredientsData> = ({
 
 	const openIngredientDetails = (ingredient: IngredientType) => {
 		setSelectedIngredient(ingredient);
-	};
-
-	const closeIngredientDetails = () => {
-		setSelectedIngredient(null);
+		openModal();
 	};
 
 	return (
@@ -127,12 +126,10 @@ export const BurgerIngredients: React.FC<IngredientsData> = ({
 					</div>
 				</Scrollbars>
 			</div>
-			{selectedIngredient && (
-				<>
-					<Modal title='Детали ингредиента' onClose={closeIngredientDetails}>
-						<IngredientDetails ingredient={selectedIngredient} />
-					</Modal>
-				</>
+			{isModalOpen && selectedIngredient && (
+				<Modal title='Детали ингредиента' onClose={closeModal}>
+					<IngredientDetails ingredient={selectedIngredient} />
+				</Modal>
 			)}
 		</section>
 	);

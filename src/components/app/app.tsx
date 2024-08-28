@@ -16,7 +16,6 @@ export const App = () => {
 				setIngredients(data);
 			} catch (error) {
 				console.error('Ошибка при загрузке ингредиентов:', error);
-				throw error;
 			}
 		};
 

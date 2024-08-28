@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
 	Button,
 	ConstructorElement,
@@ -10,22 +10,15 @@ import s from './burger-constructor.module.scss';
 import { IngredientsData } from '../../utils/types';
 import { Modal } from '../modal/modal';
 import { OrderDetails } from '../order-details/order-details';
+import { useModal } from '../../hooks/use-modal';
 
 export const BurgerConstructor: React.FC<IngredientsData> = ({
 	ingredients,
 }) => {
-	const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+	const { isModalOpen, openModal, closeModal } = useModal();
 
 	const topTypeIngredient = ingredients[0];
 	const bottomTypeIngredient = ingredients[0];
-
-	const openOrderModal = () => {
-		setIsOrderModalOpen(true);
-	};
-
-	const closeOrderModal = () => {
-		setIsOrderModalOpen(false);
-	};
 
 	return (
 		<div className={s.burger_constructor}>
@@ -77,12 +70,12 @@ export const BurgerConstructor: React.FC<IngredientsData> = ({
 					type='primary'
 					size='large'
 					extraClass={s.order_button}
-					onClick={openOrderModal}>
+					onClick={openModal}>
 					Оформить заказ
 				</Button>
 			</div>
-			{isOrderModalOpen && (
-				<Modal onClose={closeOrderModal}>
+			{isModalOpen && (
+				<Modal onClose={closeModal}>
 					<OrderDetails />
 				</Modal>
 			)}
