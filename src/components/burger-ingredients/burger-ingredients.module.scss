@@ -1,0 +1,56 @@
+.main_ingredients {
+	max-height: 700px;
+	margin-top: 40px;
+}
+
+.ingredients_section {
+	margin-bottom: 65px;
+}
+
+.menu_nav {
+	display: flex;
+	margin-top: 20px;
+}
+
+.ingredients_list {
+	display: grid;
+	grid-template-columns: repeat(2, 272px);
+	gap: 32px 24px;
+	padding-left: 0;
+}
+
+.ingredient_card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 282px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.ingredient_image {
+	width: 240px;
+	height: 120px;
+	padding-top: 5px;
+}
+
+.name {
+	margin-top: 8px;
+}
+
+.price {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding-top: 10px;
+}
+
+.scroll {
+	width: 590px !important;
+	height: 678px !important;
+}
+
+.thumb {
+	background-color: #8585ad !important;
+}
