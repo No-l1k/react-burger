@@ -2,33 +2,19 @@ import s from './app.module.scss';
 import { AppHeader } from '../app-header/app-header';
 import { BurgerIngredients } from '../burger-ingredients/burger-ingredients';
 import { BurgerConstructor } from '../burger-constructor/burger-constructor';
-import { useEffect, useState } from 'react';
-import { fetchIngredients } from '../../store/ingredients-api';
-import { IngredientType } from '../../utils/types';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 export const App = () => {
-	const [ingredients, setIngredients] = useState<IngredientType[]>([]);
-
-	useEffect(() => {
-		const getIngredients = async () => {
-			try {
-				const data = await fetchIngredients();
-				setIngredients(data);
-			} catch (error) {
-				console.error('Ошибка при загрузке ингредиентов:', error);
-			}
-		};
-
-		getIngredients();
-	}, []);
-
 	return (
 		<div className={s.app}>
 			<AppHeader />
-			<main className={s.main}>
-				<BurgerIngredients ingredients={ingredients} />
-				<BurgerConstructor ingredients={ingredients} />
-			</main>
+			<DndProvider backend={HTML5Backend}>
+				<main className={s.main}>
+					<BurgerIngredients />
+					<BurgerConstructor />
+				</main>
+			</DndProvider>
 		</div>
 	);
 };
