@@ -11,6 +11,7 @@ export interface IngredientType {
 	image_mobile?: string;
 	image_large?: string;
 	__v?: number;
+	quantity?: number;
 }
 
 export interface IngredientsData {
