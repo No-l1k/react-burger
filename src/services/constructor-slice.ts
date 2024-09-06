@@ -19,16 +19,41 @@ const ConstructorSlice = createSlice({
 		setBun(state, action: PayloadAction<IngredientType>) {
 			state.bun = action.payload;
 		},
-		setIngredients(state, action: PayloadAction<IngredientType[]>) {
-			state.ingredients = action.payload.map((ingredient) => ({
-				...ingredient,
-				id: uuidv4(),
-				quantity: 1,
-			}));
+		setIngredients: {
+			reducer(
+				state,
+				action: PayloadAction<
+					(IngredientType & { id: string; quantity: number })[]
+				>
+			) {
+				state.ingredients = action.payload;
+			},
+			prepare(ingredients: IngredientType[]) {
+				return {
+					payload: ingredients.map((ingredient) => ({
+						...ingredient,
+						id: uuidv4(),
+						quantity: 1,
+					})),
+				};
+			},
 		},
-		addIngredient(state, action: PayloadAction<IngredientType>) {
-			const newIngredient = { ...action.payload, id: uuidv4(), quantity: 1 };
-			state.ingredients.push(newIngredient);
+		addIngredient: {
+			reducer(
+				state,
+				action: PayloadAction<IngredientType & { id: string; quantity: number }>
+			) {
+				state.ingredients.push(action.payload);
+			},
+			prepare(ingredient: IngredientType) {
+				return {
+					payload: {
+						...ingredient,
+						id: uuidv4(),
+						quantity: 1,
+					},
+				};
+			},
 		},
 		removeIngredient(state, action: PayloadAction<string>) {
 			const id = action.payload;

@@ -3,14 +3,13 @@ import {
 	CurrencyIcon,
 	Tab,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import s from './burger-ingredients.module.scss';
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import { IngredientGroup, IngredientType } from '../../utils/types';
+import { IngredientType } from '../../utils/types';
 import { Modal } from '../modal/modal';
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { useModal } from '../../hooks/use-modal';
-import { useDispatch, useSelector } from 'react-redux';
 import {
 	fetchIngredients,
 	activeHighlight,
@@ -18,18 +17,18 @@ import {
 	clearCurrentIngredient,
 	setCurrentIngredient,
 } from '../../services/ingredients-slice';
-import { AppDispatch, RootState } from '../../services/store';
+import { useAppDispatch, useAppSelector } from '../../services/store';
 import { useDrag } from 'react-dnd';
 
 export const BurgerIngredients = ({}) => {
 	const [current, setCurrent] = React.useState('one');
 	const { isModalOpen, openModal, closeModal } = useModal();
 
-	const dispatch = useDispatch<AppDispatch>();
+	const dispatch = useAppDispatch();
 
-	const { ingredients } = useSelector((state: RootState) => state.ingredients);
-	const selectedIngredient = useSelector(
-		(state: RootState) => state.ingredients.currentIngredient
+	const ingredients = useAppSelector((state) => state.ingredients.ingredients);
+	const selectedIngredient = useAppSelector(
+		(state) => state.ingredients.currentIngredient
 	);
 
 	const menuRef = useRef<HTMLDivElement>(null);
@@ -37,11 +36,13 @@ export const BurgerIngredients = ({}) => {
 	const saucesRef = useRef<HTMLDivElement>(null);
 	const mainsRef = useRef<HTMLDivElement>(null);
 
-	const groupedIngredients: IngredientGroup = {
-		bun: ingredients.filter((item) => item.type === 'bun'),
-		sauce: ingredients.filter((item) => item.type === 'sauce'),
-		main: ingredients.filter((item) => item.type === 'main'),
-	};
+	const groupedIngredients = useMemo(() => {
+		return {
+			bun: ingredients.filter((item) => item.type === 'bun'),
+			sauce: ingredients.filter((item) => item.type === 'sauce'),
+			main: ingredients.filter((item) => item.type === 'main'),
+		};
+	}, [ingredients]);
 
 	useEffect(() => {
 		dispatch(fetchIngredients());
@@ -79,8 +80,6 @@ export const BurgerIngredients = ({}) => {
 		<section>
 			<p className='text text_type_main-large'>Соберите бургер</p>
 			<div className={s.menu_nav} ref={menuRef}>
-				{' '}
-				{/*Реф на меню,потому что не получилось прокинуть реф в ScrollBars */}
 				<Tab value='one' active={current === 'one'} onClick={setCurrent}>
 					Булки
 				</Tab>
@@ -154,8 +153,10 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
 	ingredient,
 	onClick,
 }) => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
+
 	const prevIsDraggingRef = useRef(false);
+
 	const [, dragRef] = useDrag({
 		type: 'new-ingredient',
 		item: { ingredient },
@@ -173,7 +174,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
 		},
 	});
 
-	const ingredientsInConstructor = useSelector((state: RootState) =>
+	const ingredientsInConstructor = useAppSelector((state) =>
 		state.burgerConstructor.ingredients.filter(
 			(item) => item._id === ingredient._id
 		)

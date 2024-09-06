@@ -10,8 +10,7 @@ import s from './burger-constructor.module.scss';
 import { Modal } from '../modal/modal';
 import { OrderDetails } from '../order-details/order-details';
 import { useModal } from '../../hooks/use-modal';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../services/store';
+import { useAppDispatch, useAppSelector } from '../../services/store';
 import {
 	addIngredient,
 	removeIngredient,
@@ -24,18 +23,18 @@ import { orderRequest } from '../../services/order-slice';
 
 export const BurgerConstructor = () => {
 	const { isModalOpen, openModal, closeModal } = useModal();
-	const dispatch = useDispatch<AppDispatch>();
+	const dispatch = useAppDispatch();
 
-	const isHighlighted = useSelector(
-		(state: RootState) => state.ingredients.isHighlighted
+	const isHighlighted = useAppSelector(
+		(state) => state.ingredients.isHighlighted
 	);
-	const allIngredients = useSelector(
-		(state: RootState) => state.ingredients.ingredients
+	const allIngredients = useAppSelector(
+		(state) => state.ingredients.ingredients
 	);
-	const { bun, ingredients } = useSelector(
-		(state: RootState) => state.burgerConstructor
+	const { bun, ingredients } = useAppSelector(
+		(state) => state.burgerConstructor
 	);
-	const { orderNumber, error } = useSelector((state: RootState) => state.order);
+	const { orderNumber, error } = useAppSelector((state) => state.order);
 
 	useEffect(() => {
 		if (!bun) {
