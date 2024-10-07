@@ -7,29 +7,26 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import s from './burger-ingredients.module.scss';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { IngredientType } from '../../utils/types';
-import { Modal } from '../modal/modal';
-import { IngredientDetails } from '../ingredient-details/ingredient-details';
+
 import { useModal } from '../../hooks/use-modal';
 import {
 	fetchIngredients,
 	activeHighlight,
 	removeHighlight,
-	clearCurrentIngredient,
 	setCurrentIngredient,
 } from '../../services/ingredients-slice';
 import { useAppDispatch, useAppSelector } from '../../services/store';
 import { useDrag } from 'react-dnd';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerIngredients = ({}) => {
 	const [current, setCurrent] = React.useState('one');
-	const { isModalOpen, openModal, closeModal } = useModal();
+	const { openModal } = useModal();
 
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 
 	const ingredients = useAppSelector((state) => state.ingredients.ingredients);
-	const selectedIngredient = useAppSelector(
-		(state) => state.ingredients.currentIngredient
-	);
 
 	const menuRef = useRef<HTMLDivElement>(null);
 	const bunsRef = useRef<HTMLDivElement>(null);
@@ -51,11 +48,9 @@ export const BurgerIngredients = ({}) => {
 	const openIngredientDetails = (ingredient: IngredientType) => {
 		dispatch(setCurrentIngredient(ingredient));
 		openModal();
-	};
-
-	const closeIngredientDetails = () => {
-		dispatch(clearCurrentIngredient());
-		closeModal();
+		navigate(`/ingredients/${ingredient._id}`, {
+			state: { fromModal: true, backgroundLocation: location.pathname },
+		});
 	};
 
 	const handleScroll = () => {
@@ -135,11 +130,6 @@ export const BurgerIngredients = ({}) => {
 					</div>
 				</Scrollbars>
 			</div>
-			{isModalOpen && selectedIngredient && (
-				<Modal title='Детали ингредиента' onClose={closeIngredientDetails}>
-					<IngredientDetails ingredient={selectedIngredient} />
-				</Modal>
-			)}
 		</section>
 	);
 };

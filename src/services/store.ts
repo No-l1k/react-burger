@@ -3,6 +3,7 @@ import ingredientsSlice from './ingredients-slice';
 import constructorSlice from './constructor-slice';
 import orderSlice from './order-slice';
 import { useDispatch, useSelector } from 'react-redux';
+import passwordResetSlice from './password-reset-slice';
 import authSlice from './auth-slice';
 
 const store = configureStore({
@@ -10,6 +11,7 @@ const store = configureStore({
 		ingredients: ingredientsSlice,
 		burgerConstructor: constructorSlice,
 		order: orderSlice,
+		passwordReset: passwordResetSlice,
 		auth: authSlice,
 	},
 });

@@ -13,13 +13,20 @@
 	min-width: 320px;
 	margin-left: 350px;
 
-	a {
+	a,
+	span {
 		color: #f2f2f3;
 		font-weight: 500;
 		text-decoration: inherit;
 	}
 
-	a:hover {
+	a:hover,
+	span:hover {
+		color: #a1a1e9;
+		cursor: pointer;
+	}
+
+	.active {
 		color: #a1a1e9;
 	}
 }

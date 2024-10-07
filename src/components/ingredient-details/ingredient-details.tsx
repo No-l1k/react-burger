@@ -1,14 +1,18 @@
 import React from 'react';
 import s from './ingredient-details.module.scss';
-import { IngredientType } from '../../utils/types';
+import { useAppSelector } from '../../services/store';
+import { useParams } from 'react-router-dom';
 
-interface IngredientDetailsProps {
-	ingredient: IngredientType;
-}
+export const IngredientDetails: React.FC = () => {
+	const { id } = useParams<{ id: string }>();
+	const ingredient = useAppSelector((state) =>
+		state.ingredients.ingredients.find((item) => item._id === id)
+	);
 
-export const IngredientDetails: React.FC<IngredientDetailsProps> = ({
-	ingredient,
-}) => {
+	if (!ingredient) {
+		return <p>Ингредиента нету в наличии</p>;
+	}
+
 	return (
 		<div className={s.container}>
 			<img src={ingredient.image_large} alt={ingredient.name} />

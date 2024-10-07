@@ -1,4 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { fetchWithRefresh } from './api';
+import { RootState } from './store';
 
 const ORDER_API_URL = 'https://norma.nomoreparties.space';
 
@@ -14,28 +16,30 @@ const initialState: OrderState = {
 	error: null,
 };
 
-export const orderRequest = createAsyncThunk(
-	'order/placeOrder',
-	async (ingredientIds: string[]) => {
-		try {
-			const response = await fetch(`${ORDER_API_URL}/api/orders`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ ingredients: ingredientIds }),
-			});
+export const orderRequest = createAsyncThunk<
+	number,
+	string[],
+	{ state: RootState }
+>('order/placeOrder', async (ingredientIds, { getState }) => {
+	try {
+		const state = getState();
+		const token = state.auth.accessToken;
 
-			const data = await response.json();
+		const data = await fetchWithRefresh(`${ORDER_API_URL}/api/orders`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `${token}`,
+			},
+			body: JSON.stringify({ ingredients: ingredientIds }),
+		});
 
-			return data.order.number;
-		} catch (error) {
-			console.error('Ошибка при загрузке заказа:', error);
-			throw error;
-		}
+		return data.order.number;
+	} catch (error) {
+		console.error('Ошибка при загрузке заказа:', error);
+		throw error;
 	}
-);
-
+});
 const orderSlice = createSlice({
 	name: 'order',
 	initialState,

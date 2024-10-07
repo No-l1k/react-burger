@@ -20,10 +20,13 @@ import {
 import { IngredientType } from '../../utils/types';
 import { useDrop, useDrag } from 'react-dnd';
 import { orderRequest } from '../../services/order-slice';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor = () => {
 	const { isModalOpen, openModal, closeModal } = useModal();
 	const dispatch = useAppDispatch();
+	const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+	const navigate = useNavigate();
 
 	const isHighlighted = useAppSelector(
 		(state) => state.ingredients.isHighlighted
@@ -34,7 +37,9 @@ export const BurgerConstructor = () => {
 	const { bun, ingredients } = useAppSelector(
 		(state) => state.burgerConstructor
 	);
-	const { orderNumber, error } = useAppSelector((state) => state.order);
+	const { orderNumber, error, loading } = useAppSelector(
+		(state) => state.order
+	);
 
 	useEffect(() => {
 		if (!bun) {
@@ -68,6 +73,11 @@ export const BurgerConstructor = () => {
 	);
 
 	const handleOrderClick = () => {
+		if (!isAuthenticated) {
+			navigate('/login');
+			return;
+		}
+
 		if (bun) {
 			const ingredientIds = [
 				bun._id,
@@ -148,7 +158,11 @@ export const BurgerConstructor = () => {
 			</div>
 			{isModalOpen && (
 				<Modal onClose={closeModal}>
-					<OrderDetails orderNumber={orderNumber} error={error} />
+					<OrderDetails
+						orderNumber={orderNumber}
+						error={error}
+						loading={loading}
+					/>
 				</Modal>
 			)}
 		</div>

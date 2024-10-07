@@ -6,20 +6,24 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import s from './forgot-password.module.scss';
 import { useAppDispatch, useAppSelector } from '../../services/store';
-import { resetPasswordRequest } from '../../services/auth-slice';
+import { resetPasswordRequest } from '../../services/password-reset-slice';
 
 export const ForgotPassword = () => {
 	const [email, setEmail] = useState('');
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
-	const { resetPasswordStatus } = useAppSelector((state) => state.auth);
+	const { status: resetPasswordStatus } = useAppSelector(
+		(state) => state.passwordReset
+	);
 
-	const handleResetPassword = async () => {
+	const handleResetPassword = async (e: React.FormEvent) => {
+		e.preventDefault();
 		await dispatch(resetPasswordRequest(email));
 	};
 
 	useEffect(() => {
-		if (resetPasswordStatus === 'success') {
+		if (resetPasswordStatus === 'succeeded') {
+			localStorage.setItem('resetPasswordAllowed', 'true');
 			navigate('/reset-password');
 		}
 	}, [resetPasswordStatus, navigate]);
@@ -29,7 +33,7 @@ export const ForgotPassword = () => {
 	};
 
 	return (
-		<div className={s.container}>
+		<form className={s.container} onSubmit={handleResetPassword}>
 			<p className='text text_type_main-medium'>Восстановление пароля</p>
 			<EmailInput
 				placeholder={'Укажите E-mail'}
@@ -53,6 +57,6 @@ export const ForgotPassword = () => {
 					Войти
 				</span>
 			</p>
-		</div>
+		</form>
 	);
 };

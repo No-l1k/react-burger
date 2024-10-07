@@ -3,19 +3,51 @@ import {
 	Input,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import s from './profile.module.scss';
-import { ChangeEvent, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { OrderHistory } from '../order-history/order-history';
+import {
+	getUserDataRequest,
+	logoutRequest,
+	updateUserDataRequest,
+} from '../../services/auth-slice';
+import { useAppDispatch, useAppSelector } from '../../services/store';
 
 export const Profile = () => {
 	const location = useLocation();
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		dispatch(logoutRequest()).then((result) => {
+			if (logoutRequest.fulfilled.match(result)) {
+				navigate('/login');
+			}
+		});
+	};
 
 	return (
 		<div className={s.container}>
 			<div className={`text text_type_main-medium ${s.nav}`}>
-				<NavLink to='/profile'>Профиль</NavLink>
-				<NavLink to='/profile/order-history'>История заказов</NavLink>
-				<div>Выход</div>
+				<NavLink
+					to='/profile'
+					className={
+						location.pathname === '/profile' ? `${s.link} ${s.active}` : s.link
+					}>
+					Профиль
+				</NavLink>
+				<NavLink
+					to='/profile/order-history'
+					className={
+						location.pathname === '/profile/order-history'
+							? `${s.link} ${s.active}`
+							: s.link
+					}>
+					История заказов
+				</NavLink>
+				<span className={s.exit} onClick={handleLogout}>
+					Выход
+				</span>
 			</div>
 			<div>
 				{location.pathname === '/profile' ? <ProfileInfo /> : <OrderHistory />}
@@ -25,9 +57,48 @@ export const Profile = () => {
 };
 
 const ProfileInfo = () => {
-	const [name, setName] = useState('');
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
+	const dispatch = useAppDispatch();
+	const { user } = useAppSelector((state) => state.auth);
+	const initialUser = useAppSelector((state) => state.auth.initialUser);
+
+	const [name, setName] = useState(user?.name || '');
+	const [email, setEmail] = useState(user?.email || '');
+	const [password, setPassword] = useState(user?.name || '');
+
+	const [isEdited, setIsEdited] = useState(false);
+
+	useEffect(() => {
+		if (!user) {
+			dispatch(getUserDataRequest());
+		}
+	}, [dispatch, user]);
+
+	useEffect(() => {
+		if (user) {
+			setName(user.name);
+			setEmail(user.email);
+		}
+	}, [user]);
+
+	const handleChange = (
+		setter: React.Dispatch<React.SetStateAction<string>>,
+		value: string
+	) => {
+		setter(value);
+		setIsEdited(true);
+	};
+
+	const handleSubmit = (e: FormEvent) => {
+		e.preventDefault();
+		dispatch(updateUserDataRequest({ name, email }));
+		setIsEdited(false);
+	};
+
+	const handleCancel = () => {
+		setName(initialUser?.name || '');
+		setEmail(initialUser?.email || '');
+		setIsEdited(false);
+	};
 
 	const handleIconClick = (field: string) => {
 		switch (field) {
@@ -43,14 +114,17 @@ const ProfileInfo = () => {
 			default:
 				break;
 		}
+		setIsEdited(true);
 	};
 
 	return (
-		<div className={s.info_container}>
+		<form className={s.info_container} onSubmit={handleSubmit}>
 			<Input
 				type={'text'}
 				placeholder={'Имя'}
-				onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+				onChange={(e: ChangeEvent<HTMLInputElement>) =>
+					handleChange(setName, e.target.value)
+				}
 				value={name}
 				icon={name ? 'CloseIcon' : 'EditIcon'}
 				name={'name'}
@@ -61,7 +135,7 @@ const ProfileInfo = () => {
 				type={'email'}
 				placeholder={'E-mail'}
 				onChange={(e: ChangeEvent<HTMLInputElement>) =>
-					setEmail(e.target.value)
+					handleChange(setEmail, e.target.value)
 				}
 				value={email}
 				icon={email ? 'CloseIcon' : 'EditIcon'}
@@ -73,7 +147,7 @@ const ProfileInfo = () => {
 				type={'password'}
 				placeholder={'Пароль'}
 				onChange={(e: ChangeEvent<HTMLInputElement>) =>
-					setPassword(e.target.value)
+					handleChange(setPassword, e.target.value)
 				}
 				value={password}
 				icon={password ? 'CloseIcon' : 'EditIcon'}
@@ -82,15 +156,18 @@ const ProfileInfo = () => {
 				size={'default'}
 				onIconClick={() => handleIconClick('password')}
 			/>
-			<div className={s.buttons}>
-				<p
-					className={`text text_type_main-default text_color_inactive ${s.link}`}>
-					Отмена
-				</p>
-				<Button htmlType='button' type='primary' size='medium'>
-					Сохранить
-				</Button>
-			</div>
-		</div>
+			{isEdited && (
+				<div className={s.buttons}>
+					<span
+						className={`text text_type_main-default text_color_inactive ${s.link}`}
+						onClick={handleCancel}>
+						Отмена
+					</span>
+					<Button htmlType='submit' type='primary' size='medium'>
+						Сохранить
+					</Button>
+				</div>
+			)}
+		</form>
 	);
 };

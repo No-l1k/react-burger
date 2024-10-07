@@ -4,8 +4,10 @@ import {
 	PasswordInput,
 } from '@ya.praktikum/react-developer-burger-ui-components';
 import s from './register.module.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../services/store';
+import { registerRequest } from '../../services/auth-slice';
 
 export const Register = () => {
 	const [name, setName] = useState('');
@@ -13,13 +15,26 @@ export const Register = () => {
 	const [password, setPassword] = useState('');
 
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
+	const { loading } = useAppSelector((state) => state.auth);
+
+	const handleRegister = async (e: React.FormEvent) => {
+		e.preventDefault();
+		await dispatch(registerRequest({ email, password, name }));
+	};
+
+	useEffect(() => {
+		if (loading === 'succeeded') {
+			navigate('/login');
+		}
+	}, [loading, navigate]);
 
 	const handleLoginRedirect = () => {
 		navigate('/login');
 	};
 
 	return (
-		<div className={s.container}>
+		<form className={s.container} onSubmit={handleRegister}>
 			<p className='text text_type_main-medium'>Регистрация</p>
 			<Input
 				type={'text'}
@@ -47,7 +62,7 @@ export const Register = () => {
 				name={'password'}
 				extraClass='mb-2'
 			/>
-			<Button htmlType='button' type='primary' size='medium'>
+			<Button htmlType='submit' type='primary' size='medium'>
 				Зарегистрироваться
 			</Button>
 			<p
@@ -58,6 +73,6 @@ export const Register = () => {
 					Войти
 				</span>
 			</p>
-		</div>
+		</form>
 	);
 };

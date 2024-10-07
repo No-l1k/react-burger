@@ -6,19 +6,36 @@ import {
 import s from './reset-password.module.scss';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../services/store';
+import { resetPasswordWithTokenRequest } from '../../services/password-reset-slice';
 
 export const ResetPassword = () => {
 	const [password, setPassword] = useState('');
 	const [code, setCode] = useState('');
 
+	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
+
+	const handlePasswordReset = (e: React.FormEvent) => {
+		e.preventDefault();
+		if (password && code) {
+			dispatch(resetPasswordWithTokenRequest({ password, token: code })).then(
+				(action) => {
+					if (resetPasswordWithTokenRequest.fulfilled.match(action)) {
+						localStorage.removeItem('resetPasswordAllowed');
+						navigate('/login');
+					}
+				}
+			);
+		}
+	};
 
 	const handleLoginRedirect = () => {
 		navigate('/login');
 	};
 
 	return (
-		<div className={s.container}>
+		<form className={s.container} onSubmit={handlePasswordReset}>
 			<p className='text text_type_main-medium'>Восстановление пароля</p>
 			<PasswordInput
 				onChange={(e) => setPassword(e.target.value)}
@@ -36,7 +53,11 @@ export const ResetPassword = () => {
 				errorText={'Ошибка'}
 				size={'default'}
 			/>
-			<Button htmlType='button' type='primary' size='medium'>
+			<Button
+				onClick={handlePasswordReset}
+				htmlType='submit'
+				type='primary'
+				size='medium'>
 				Сохранить
 			</Button>
 			<p
@@ -47,6 +68,6 @@ export const ResetPassword = () => {
 					Войти
 				</span>
 			</p>
-		</div>
+		</form>
 	);
 };

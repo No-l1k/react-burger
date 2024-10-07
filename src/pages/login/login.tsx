@@ -3,16 +3,32 @@ import {
 	Input,
 	PasswordInput,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import s from './login.module.scss';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState, useAppDispatch } from '../../services/store';
+import { loginRequest } from '../../services/auth-slice';
 
 export const Login = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
 
+	const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+
+	useEffect(() => {
+		if (isAuthenticated) {
+			navigate('/');
+		}
+	}, [isAuthenticated, navigate]);
+
+	const handleLogin = (e: React.FormEvent) => {
+		e.preventDefault();
+		dispatch(loginRequest({ email, password }));
+	};
 	const handleRegisterRedirect = () => {
 		navigate('/register');
 	};
@@ -22,7 +38,7 @@ export const Login = () => {
 	};
 
 	return (
-		<div className={s.container}>
+		<form className={s.container} onSubmit={handleLogin}>
 			<p className='text text_type_main-medium'>Вход</p>
 			<Input
 				type={'email'}
@@ -40,7 +56,11 @@ export const Login = () => {
 				name={'password'}
 				extraClass='mb-2'
 			/>
-			<Button htmlType='button' type='primary' size='medium'>
+			<Button
+				htmlType='button'
+				type='primary'
+				size='medium'
+				onClick={handleLogin}>
 				Войти
 			</Button>
 			<div className={s.nav_container}>
@@ -59,6 +79,6 @@ export const Login = () => {
 					</span>
 				</p>
 			</div>
-		</div>
+		</form>
 	);
 };
