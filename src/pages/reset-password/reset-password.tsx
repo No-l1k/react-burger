@@ -53,11 +53,7 @@ export const ResetPassword = () => {
 				errorText={'Ошибка'}
 				size={'default'}
 			/>
-			<Button
-				onClick={handlePasswordReset}
-				htmlType='submit'
-				type='primary'
-				size='medium'>
+			<Button htmlType='submit' type='primary' size='medium'>
 				Сохранить
 			</Button>
 			<p
