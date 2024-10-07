@@ -1,14 +1,13 @@
-export const API_URL = 'https://norma.nomoreparties.space/api';
+import { checkResponse } from '../utils/helpers';
 
-const checkResponse = (res: Response): Promise<any> => {
-	return res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
-};
+export const BASE_URL = 'https://norma.nomoreparties.space/api';
+
 export const registerUser = async (
 	email: string,
 	password: string,
 	name: string
 ) => {
-	const response = await fetch(`${API_URL}/auth/register`, {
+	const response = await fetch(`${BASE_URL}/auth/register`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -16,7 +15,7 @@ export const registerUser = async (
 		body: JSON.stringify({ email, password, name }),
 	});
 
-	const data = await response.json();
+	const data = await checkResponse(response);
 
 	localStorage.setItem('accessToken', data.accessToken);
 	localStorage.setItem('refreshToken', data.refreshToken);
@@ -25,7 +24,7 @@ export const registerUser = async (
 };
 
 export const resetPassword = async (email: string) => {
-	const response = await fetch(`${API_URL}/password-reset`, {
+	const response = await fetch(`${BASE_URL}/password-reset`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -33,14 +32,14 @@ export const resetPassword = async (email: string) => {
 		body: JSON.stringify({ email }),
 	});
 
-	return response.json();
+	return checkResponse(response);
 };
 
 export const resetPasswordWithToken = async (
 	password: string,
 	token: string
 ) => {
-	const response = await fetch(`${API_URL}/password-reset/reset`, {
+	const response = await fetch(`${BASE_URL}/password-reset/reset`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -52,11 +51,11 @@ export const resetPasswordWithToken = async (
 		throw new Error('Failed to reset password');
 	}
 
-	return response.json();
+	return checkResponse(response);
 };
 
 export const loginUser = async (email: string, password: string) => {
-	const response = await fetch(`${API_URL}/auth/login`, {
+	const response = await fetch(`${BASE_URL}/auth/login`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -68,7 +67,7 @@ export const loginUser = async (email: string, password: string) => {
 };
 
 export const refreshToken = async () => {
-	const response = await fetch(`${API_URL}/auth/token`, {
+	const response = await fetch(`${BASE_URL}/auth/token`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -105,7 +104,7 @@ export const fetchWithRefresh = async (
 };
 
 export const getUserData = async (token: string) => {
-	return await fetchWithRefresh(`${API_URL}/auth/user`, {
+	return await fetchWithRefresh(`${BASE_URL}/auth/user`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -118,7 +117,7 @@ export const updateUserData = async (
 	token: string,
 	userData: { name: string; email: string }
 ) => {
-	return await fetchWithRefresh(`${API_URL}/auth/user`, {
+	return await fetchWithRefresh(`${BASE_URL}/auth/user`, {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
@@ -129,7 +128,7 @@ export const updateUserData = async (
 };
 
 export const logoutUser = async () => {
-	const response = await fetch(`${API_URL}/auth/logout`, {
+	const response = await fetch(`${BASE_URL}/auth/logout`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

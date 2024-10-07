@@ -13,28 +13,17 @@ const initialState: PasswordResetState = {
 
 export const resetPasswordRequest = createAsyncThunk(
 	'password/reset',
-	async (email: string, thunkAPI) => {
-		try {
-			const data = await resetPassword(email);
-			return data;
-		} catch (error: any) {
-			return thunkAPI.rejectWithValue(error.message);
-		}
+	async (email: string) => {
+		const data = await resetPassword(email);
+		return data;
 	}
 );
 
 export const resetPasswordWithTokenRequest = createAsyncThunk(
 	'password/resetWithToken',
-	async (
-		{ password, token }: { password: string; token: string },
-		thunkAPI
-	) => {
-		try {
-			const data = await resetPasswordWithToken(password, token);
-			return data;
-		} catch (error: any) {
-			return thunkAPI.rejectWithValue(error.message);
-		}
+	async ({ password, token }: { password: string; token: string }) => {
+		const data = await resetPasswordWithToken(password, token);
+		return data;
 	}
 );
 

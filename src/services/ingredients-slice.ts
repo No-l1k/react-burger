@@ -1,22 +1,17 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { IngredientType } from '../utils/types';
-
-const INGREDIENTS_API_URL = 'https://norma.nomoreparties.space';
+import { checkResponse } from '../utils/helpers';
+import { BASE_URL } from './api';
 
 export const fetchIngredients = createAsyncThunk(
 	'ingredients/fetchIngredients',
 	async () => {
-		try {
-			const response = await fetch(`${INGREDIENTS_API_URL}/api/ingredients`);
-			if (!response.ok) {
-				throw new Error(`HTTP error! Status: ${response.status}`);
-			}
-			const data = await response.json();
-			return data.data as IngredientType[];
-		} catch (error) {
-			console.error('Ошибка при загрузке ингредиентов:', error);
-			throw error;
+		const response = await fetch(`${BASE_URL}/api/ingredients`);
+		if (!response.ok) {
+			throw new Error(`HTTP error! Status: ${response.status}`);
 		}
+		const data = await checkResponse(response);
+		return data.data as IngredientType[];
 	}
 );
 

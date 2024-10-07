@@ -34,37 +34,27 @@ const initialState: AuthState = {
 
 export const registerRequest = createAsyncThunk(
 	'auth/register',
-	async (
-		{
-			email,
-			password,
-			name,
-		}: { email: string; password: string; name: string },
-		thunkAPI
-	) => {
-		try {
-			const data = await registerUser(email, password, name);
-			return data;
-		} catch (error: any) {
-			return thunkAPI.rejectWithValue(error.message);
-		}
+	async ({
+		email,
+		password,
+		name,
+	}: {
+		email: string;
+		password: string;
+		name: string;
+	}) => {
+		const data = await registerUser(email, password, name);
+		return data;
 	}
 );
 
 export const loginRequest = createAsyncThunk(
 	'auth/login',
-	async (
-		{ email, password }: { email: string; password: string },
-		thunkAPI
-	) => {
-		try {
-			const data = await loginUser(email, password);
-			localStorage.setItem('refreshToken', data.refreshToken);
-			localStorage.setItem('accessToken', data.accessToken);
-			return data;
-		} catch (error: any) {
-			return thunkAPI.rejectWithValue(error.message);
-		}
+	async ({ email, password }: { email: string; password: string }) => {
+		const data = await loginUser(email, password);
+		localStorage.setItem('refreshToken', data.refreshToken);
+		localStorage.setItem('accessToken', data.accessToken);
+		return data;
 	}
 );
 
@@ -79,12 +69,8 @@ export const getUserDataRequest = createAsyncThunk(
 			return thunkAPI.rejectWithValue('No access token found');
 		}
 
-		try {
-			const response = await getUserData(accessToken);
-			return response.user;
-		} catch (error: any) {
-			return thunkAPI.rejectWithValue(error.message);
-		}
+		const response = await getUserData(accessToken);
+		return response.user;
 	}
 );
 
@@ -99,28 +85,17 @@ export const updateUserDataRequest = createAsyncThunk(
 			return thunkAPI.rejectWithValue('No access token found');
 		}
 
-		try {
-			const response = await updateUserData(accessToken, userData);
-			return response.user;
-		} catch (error: any) {
-			return thunkAPI.rejectWithValue(error.message);
-		}
+		const response = await updateUserData(accessToken, userData);
+		return response.user;
 	}
 );
 
-export const logoutRequest = createAsyncThunk(
-	'auth/logout',
-	async (_, thunkAPI) => {
-		try {
-			const data = await logoutUser();
-			localStorage.removeItem('refreshToken');
-			localStorage.removeItem('accessToken');
-			return data;
-		} catch (error: any) {
-			return thunkAPI.rejectWithValue(error.message);
-		}
-	}
-);
+export const logoutRequest = createAsyncThunk('auth/logout', async () => {
+	const data = await logoutUser();
+	localStorage.removeItem('refreshToken');
+	localStorage.removeItem('accessToken');
+	return data;
+});
 
 const authSlice = createSlice({
 	name: 'auth',

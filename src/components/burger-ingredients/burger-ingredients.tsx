@@ -144,6 +144,9 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
 	onClick,
 }) => {
 	const dispatch = useAppDispatch();
+	const burgerIngredients = useAppSelector(
+		(state) => state.burgerConstructor.ingredients
+	);
 
 	const prevIsDraggingRef = useRef(false);
 
@@ -164,11 +167,9 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
 		},
 	});
 
-	const ingredientsInConstructor = useAppSelector((state) =>
-		state.burgerConstructor.ingredients.filter(
-			(item) => item._id === ingredient._id
-		)
-	);
+	const ingredientsInConstructor = useMemo(() => {
+		return burgerIngredients.filter((item) => item._id === ingredient._id);
+	}, [burgerIngredients, ingredient._id]);
 
 	const count = ingredientsInConstructor.reduce(
 		(total, item) => total + item.quantity,
