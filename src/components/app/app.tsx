@@ -18,6 +18,7 @@ import { useAppDispatch, useAppSelector } from '../../services/store';
 import { getUserDataRequest } from '../../services/auth-slice';
 import { Modal } from '../modal/modal';
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
+import { fetchIngredients } from '../../services/ingredients-slice';
 
 export const App = () => {
 	const location = useLocation();
@@ -31,6 +32,10 @@ export const App = () => {
 			dispatch(getUserDataRequest());
 		}
 	}, [dispatch, isAuthenticated, accessToken]);
+
+	useEffect(() => {
+		dispatch(fetchIngredients());
+	}, [dispatch]);
 
 	const backgroundLocation = location.state?.fromModal
 		? location.state.backgroundLocation

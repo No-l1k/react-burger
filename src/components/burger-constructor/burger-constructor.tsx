@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useCallback, useRef } from 'react';
+import { useMemo, useCallback, useRef } from 'react';
 import {
 	Button,
 	ConstructorElement,
@@ -31,26 +31,13 @@ export const BurgerConstructor = () => {
 	const isHighlighted = useAppSelector(
 		(state) => state.ingredients.isHighlighted
 	);
-	const allIngredients = useAppSelector(
-		(state) => state.ingredients.ingredients
-	);
+
 	const { bun, ingredients } = useAppSelector(
 		(state) => state.burgerConstructor
 	);
 	const { orderNumber, error, loading } = useAppSelector(
 		(state) => state.order
 	);
-
-	useEffect(() => {
-		if (!bun) {
-			const initialBun = allIngredients.find(
-				(ingredient) => ingredient.type === 'bun'
-			);
-			if (initialBun) {
-				dispatch(setBun(initialBun));
-			}
-		}
-	}, [bun, allIngredients, dispatch]);
 
 	const [, dropRef] = useDrop({
 		accept: 'new-ingredient',
@@ -104,7 +91,11 @@ export const BurgerConstructor = () => {
 					isHighlighted ? s.drop_container_highlight : ''
 				}`}
 				ref={dropRef}>
-				{bun && (
+				{!bun ? (
+					<p className={`text text_type_main-large ${s.bun_container_top}`}>
+						Пожалуйста, для создания бургера перетащите в конструктор булку
+					</p>
+				) : (
 					<ConstructorElement
 						extraClass={s.constructor_extra_element}
 						type='top'
@@ -131,7 +122,9 @@ export const BurgerConstructor = () => {
 						))}
 					</div>
 				</Scrollbars>
-				{bun && (
+				{!bun ? (
+					<p className={`${s.bun_container_bottom}`}></p>
+				) : (
 					<ConstructorElement
 						extraClass={s.constructor_extra_element}
 						type='bottom'
@@ -147,14 +140,18 @@ export const BurgerConstructor = () => {
 					{totalPrice}
 					<CurrencyIcon type='primary' />
 				</span>
-				<Button
-					htmlType='button'
-					type='primary'
-					size='large'
-					extraClass={s.order_button}
-					onClick={handleOrderClick}>
-					Оформить заказ
-				</Button>
+				{bun ? (
+					<Button
+						htmlType='button'
+						type='primary'
+						size='large'
+						extraClass={s.order_button}
+						onClick={handleOrderClick}>
+						Оформить заказ
+					</Button>
+				) : (
+					''
+				)}
 			</div>
 			{isModalOpen && (
 				<Modal onClose={closeModal}>

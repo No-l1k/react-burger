@@ -15,6 +15,7 @@ export const IngredientDetails: React.FC = () => {
 
 	return (
 		<div className={s.container}>
+			<p className='text text_type_main-large'>Детали ингредиента</p>
 			<img src={ingredient.image_large} alt={ingredient.name} />
 			<p className='text text_type_main-medium'>{ingredient.name}</p>
 			<div className={s.ingredient_details}>

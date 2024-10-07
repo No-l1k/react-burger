@@ -1,13 +1,13 @@
 import { checkResponse } from '../utils/helpers';
 
-export const BASE_URL = 'https://norma.nomoreparties.space/api';
+export const BASE_URL = 'https://norma.nomoreparties.space';
 
 export const registerUser = async (
 	email: string,
 	password: string,
 	name: string
 ) => {
-	const response = await fetch(`${BASE_URL}/auth/register`, {
+	const response = await fetch(`${BASE_URL}/api/auth/register`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -24,7 +24,7 @@ export const registerUser = async (
 };
 
 export const resetPassword = async (email: string) => {
-	const response = await fetch(`${BASE_URL}/password-reset`, {
+	const response = await fetch(`${BASE_URL}/api/password-reset`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ export const resetPasswordWithToken = async (
 	password: string,
 	token: string
 ) => {
-	const response = await fetch(`${BASE_URL}/password-reset/reset`, {
+	const response = await fetch(`${BASE_URL}/api/password-reset/reset`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export const resetPasswordWithToken = async (
 };
 
 export const loginUser = async (email: string, password: string) => {
-	const response = await fetch(`${BASE_URL}/auth/login`, {
+	const response = await fetch(`${BASE_URL}/api/auth/login`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -67,7 +67,7 @@ export const loginUser = async (email: string, password: string) => {
 };
 
 export const refreshToken = async () => {
-	const response = await fetch(`${BASE_URL}/auth/token`, {
+	const response = await fetch(`${BASE_URL}/api/auth/token`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ export const fetchWithRefresh = async (
 };
 
 export const getUserData = async (token: string) => {
-	return await fetchWithRefresh(`${BASE_URL}/auth/user`, {
+	return await fetchWithRefresh(`${BASE_URL}/api/auth/user`, {
 		method: 'GET',
 		headers: {
 			'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ export const updateUserData = async (
 	token: string,
 	userData: { name: string; email: string }
 ) => {
-	return await fetchWithRefresh(`${BASE_URL}/auth/user`, {
+	return await fetchWithRefresh(`${BASE_URL}/api/auth/user`, {
 		method: 'PATCH',
 		headers: {
 			'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ export const updateUserData = async (
 };
 
 export const logoutUser = async () => {
-	const response = await fetch(`${BASE_URL}/auth/logout`, {
+	const response = await fetch(`${BASE_URL}/api/auth/logout`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

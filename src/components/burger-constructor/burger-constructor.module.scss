@@ -57,3 +57,38 @@
 .thumb {
 	background-color: #8585ad !important;
 }
+
+.bun_container_top {
+	display: inline-block;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 536px;
+	min-height: 80px;
+	margin-bottom: 16px;
+	margin-left: 30px;
+	padding: 16px 24px;
+	color: #f2f2f3;
+	font-size: 16px;
+	font-family: 'Jet Brains Mono', monospace;
+	line-height: 1.5;
+	text-align: center;
+	background: var(--background-element);
+	border-radius: var(--top-constructor-item-border-radius);
+}
+
+.bun_container_bottom {
+	display: inline-block;
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 536px;
+	min-height: 80px;
+	margin-bottom: 16px;
+	margin-left: 30px;
+	padding: 16px 24px;
+	color: #f2f2f3;
+	font-size: 16px;
+	font-family: 'Jet Brains Mono', monospace;
+	line-height: 1.5;
+	background: var(--background-element);
+	border-radius: var(--bottom-constructor-item-border-radius);
+}

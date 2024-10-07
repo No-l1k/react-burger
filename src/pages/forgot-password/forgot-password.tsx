@@ -42,11 +42,7 @@ export const ForgotPassword = () => {
 				name={'email'}
 				size={'default'}
 			/>
-			<Button
-				htmlType='button'
-				type='primary'
-				size='medium'
-				onClick={handleResetPassword}>
+			<Button htmlType='submit' type='primary' size='medium'>
 				Восстановить
 			</Button>
 			<p

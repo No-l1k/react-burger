@@ -3,14 +3,13 @@ import {
 	CurrencyIcon,
 	Tab,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import s from './burger-ingredients.module.scss';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { IngredientType } from '../../utils/types';
 
 import { useModal } from '../../hooks/use-modal';
 import {
-	fetchIngredients,
 	activeHighlight,
 	removeHighlight,
 	setCurrentIngredient,
@@ -40,10 +39,6 @@ export const BurgerIngredients = ({}) => {
 			main: ingredients.filter((item) => item.type === 'main'),
 		};
 	}, [ingredients]);
-
-	useEffect(() => {
-		dispatch(fetchIngredients());
-	}, [dispatch]);
 
 	const openIngredientDetails = (ingredient: IngredientType) => {
 		dispatch(setCurrentIngredient(ingredient));
@@ -147,6 +142,7 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
 	const burgerIngredients = useAppSelector(
 		(state) => state.burgerConstructor.ingredients
 	);
+	const bun = useAppSelector((state) => state.burgerConstructor.bun);
 
 	const prevIsDraggingRef = useRef(false);
 
@@ -171,10 +167,15 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
 		return burgerIngredients.filter((item) => item._id === ingredient._id);
 	}, [burgerIngredients, ingredient._id]);
 
-	const count = ingredientsInConstructor.reduce(
-		(total, item) => total + item.quantity,
-		0
-	);
+	const count =
+		ingredient.type === 'bun'
+			? bun && bun._id === ingredient._id
+				? 2
+				: 0
+			: ingredientsInConstructor.reduce(
+					(total, item) => total + item.quantity,
+					0
+			  );
 
 	return (
 		<li

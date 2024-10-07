@@ -56,11 +56,7 @@ export const Login = () => {
 				name={'password'}
 				extraClass='mb-2'
 			/>
-			<Button
-				htmlType='button'
-				type='primary'
-				size='medium'
-				onClick={handleLogin}>
+			<Button htmlType='submit' type='primary' size='medium'>
 				Войти
 			</Button>
 			<div className={s.nav_container}>
