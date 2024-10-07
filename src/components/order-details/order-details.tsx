@@ -1,7 +1,7 @@
 import React from 'react';
 import { CheckMarkIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import s from './order-details.module.scss';
-import { Loader } from '../app/loader/loader';
+import { Loader } from '../loader/loader';
 
 interface OrderDetailsProps {
 	orderNumber: number | null;
