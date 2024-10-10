@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useCallback, useRef } from 'react';
+import { useMemo, useCallback, useRef } from 'react';
 import {
 	Button,
 	ConstructorElement,
@@ -20,32 +20,24 @@ import {
 import { IngredientType } from '../../utils/types';
 import { useDrop, useDrag } from 'react-dnd';
 import { orderRequest } from '../../services/order-slice';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerConstructor = () => {
 	const { isModalOpen, openModal, closeModal } = useModal();
 	const dispatch = useAppDispatch();
+	const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+	const navigate = useNavigate();
 
 	const isHighlighted = useAppSelector(
 		(state) => state.ingredients.isHighlighted
 	);
-	const allIngredients = useAppSelector(
-		(state) => state.ingredients.ingredients
-	);
+
 	const { bun, ingredients } = useAppSelector(
 		(state) => state.burgerConstructor
 	);
-	const { orderNumber, error } = useAppSelector((state) => state.order);
-
-	useEffect(() => {
-		if (!bun) {
-			const initialBun = allIngredients.find(
-				(ingredient) => ingredient.type === 'bun'
-			);
-			if (initialBun) {
-				dispatch(setBun(initialBun));
-			}
-		}
-	}, [bun, allIngredients, dispatch]);
+	const { orderNumber, error, loading } = useAppSelector(
+		(state) => state.order
+	);
 
 	const [, dropRef] = useDrop({
 		accept: 'new-ingredient',
@@ -68,6 +60,11 @@ export const BurgerConstructor = () => {
 	);
 
 	const handleOrderClick = () => {
+		if (!isAuthenticated) {
+			navigate('/login');
+			return;
+		}
+
 		if (bun) {
 			const ingredientIds = [
 				bun._id,
@@ -94,7 +91,11 @@ export const BurgerConstructor = () => {
 					isHighlighted ? s.drop_container_highlight : ''
 				}`}
 				ref={dropRef}>
-				{bun && (
+				{!bun ? (
+					<p className={`text text_type_main-large ${s.bun_container_top}`}>
+						Пожалуйста, для создания бургера перетащите в конструктор булку
+					</p>
+				) : (
 					<ConstructorElement
 						extraClass={s.constructor_extra_element}
 						type='top'
@@ -121,7 +122,9 @@ export const BurgerConstructor = () => {
 						))}
 					</div>
 				</Scrollbars>
-				{bun && (
+				{!bun ? (
+					<p className={`${s.bun_container_bottom}`}></p>
+				) : (
 					<ConstructorElement
 						extraClass={s.constructor_extra_element}
 						type='bottom'
@@ -137,18 +140,26 @@ export const BurgerConstructor = () => {
 					{totalPrice}
 					<CurrencyIcon type='primary' />
 				</span>
-				<Button
-					htmlType='button'
-					type='primary'
-					size='large'
-					extraClass={s.order_button}
-					onClick={handleOrderClick}>
-					Оформить заказ
-				</Button>
+				{bun ? (
+					<Button
+						htmlType='button'
+						type='primary'
+						size='large'
+						extraClass={s.order_button}
+						onClick={handleOrderClick}>
+						Оформить заказ
+					</Button>
+				) : (
+					''
+				)}
 			</div>
 			{isModalOpen && (
 				<Modal onClose={closeModal}>
-					<OrderDetails orderNumber={orderNumber} error={error} />
+					<OrderDetails
+						orderNumber={orderNumber}
+						error={error}
+						loading={loading}
+					/>
 				</Modal>
 			)}
 		</div>

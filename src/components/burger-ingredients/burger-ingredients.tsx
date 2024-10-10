@@ -3,33 +3,29 @@ import {
 	CurrencyIcon,
 	Tab,
 } from '@ya.praktikum/react-developer-burger-ui-components';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import s from './burger-ingredients.module.scss';
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import { IngredientType } from '../../utils/types';
-import { Modal } from '../modal/modal';
-import { IngredientDetails } from '../ingredient-details/ingredient-details';
+
 import { useModal } from '../../hooks/use-modal';
 import {
-	fetchIngredients,
 	activeHighlight,
 	removeHighlight,
-	clearCurrentIngredient,
 	setCurrentIngredient,
 } from '../../services/ingredients-slice';
 import { useAppDispatch, useAppSelector } from '../../services/store';
 import { useDrag } from 'react-dnd';
+import { useNavigate } from 'react-router-dom';
 
 export const BurgerIngredients = ({}) => {
 	const [current, setCurrent] = React.useState('one');
-	const { isModalOpen, openModal, closeModal } = useModal();
+	const { openModal } = useModal();
 
 	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
 
 	const ingredients = useAppSelector((state) => state.ingredients.ingredients);
-	const selectedIngredient = useAppSelector(
-		(state) => state.ingredients.currentIngredient
-	);
 
 	const menuRef = useRef<HTMLDivElement>(null);
 	const bunsRef = useRef<HTMLDivElement>(null);
@@ -44,18 +40,12 @@ export const BurgerIngredients = ({}) => {
 		};
 	}, [ingredients]);
 
-	useEffect(() => {
-		dispatch(fetchIngredients());
-	}, [dispatch]);
-
 	const openIngredientDetails = (ingredient: IngredientType) => {
 		dispatch(setCurrentIngredient(ingredient));
 		openModal();
-	};
-
-	const closeIngredientDetails = () => {
-		dispatch(clearCurrentIngredient());
-		closeModal();
+		navigate(`/ingredients/${ingredient._id}`, {
+			state: { fromModal: true, backgroundLocation: location.pathname },
+		});
 	};
 
 	const handleScroll = () => {
@@ -135,11 +125,6 @@ export const BurgerIngredients = ({}) => {
 					</div>
 				</Scrollbars>
 			</div>
-			{isModalOpen && selectedIngredient && (
-				<Modal title='Детали ингредиента' onClose={closeIngredientDetails}>
-					<IngredientDetails ingredient={selectedIngredient} />
-				</Modal>
-			)}
 		</section>
 	);
 };
@@ -154,6 +139,10 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
 	onClick,
 }) => {
 	const dispatch = useAppDispatch();
+	const burgerIngredients = useAppSelector(
+		(state) => state.burgerConstructor.ingredients
+	);
+	const bun = useAppSelector((state) => state.burgerConstructor.bun);
 
 	const prevIsDraggingRef = useRef(false);
 
@@ -174,16 +163,19 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
 		},
 	});
 
-	const ingredientsInConstructor = useAppSelector((state) =>
-		state.burgerConstructor.ingredients.filter(
-			(item) => item._id === ingredient._id
-		)
-	);
+	const ingredientsInConstructor = useMemo(() => {
+		return burgerIngredients.filter((item) => item._id === ingredient._id);
+	}, [burgerIngredients, ingredient._id]);
 
-	const count = ingredientsInConstructor.reduce(
-		(total, item) => total + item.quantity,
-		0
-	);
+	const count =
+		ingredient.type === 'bun'
+			? bun && bun._id === ingredient._id
+				? 2
+				: 0
+			: ingredientsInConstructor.reduce(
+					(total, item) => total + item.quantity,
+					0
+			  );
 
 	return (
 		<li

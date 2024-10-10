@@ -1,16 +1,22 @@
 import React from 'react';
 import { CheckMarkIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import s from './order-details.module.scss';
+import { Loader } from '../loader/loader';
 
 interface OrderDetailsProps {
 	orderNumber: number | null;
 	error: string | null;
+	loading: boolean;
 }
 
 export const OrderDetails: React.FC<OrderDetailsProps> = ({
 	orderNumber,
 	error,
+	loading,
 }) => {
+	if (loading) {
+		return <Loader />;
+	}
 	return (
 		<div className={s.order_details}>
 			{error ? (
