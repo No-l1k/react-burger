@@ -1,4 +1,5 @@
 import { checkResponse } from '../utils/helpers';
+import { AuthResponse, LogoutResponse, UserResponse } from '../utils/types';
 
 export const BASE_URL = 'https://norma.nomoreparties.space';
 
@@ -6,7 +7,7 @@ export const registerUser = async (
 	email: string,
 	password: string,
 	name: string
-) => {
+): Promise<AuthResponse> => {
 	const response = await fetch(`${BASE_URL}/api/auth/register`, {
 		method: 'POST',
 		headers: {
@@ -54,7 +55,10 @@ export const resetPasswordWithToken = async (
 	return checkResponse(response);
 };
 
-export const loginUser = async (email: string, password: string) => {
+export const loginUser = async (
+	email: string,
+	password: string
+): Promise<AuthResponse> => {
 	const response = await fetch(`${BASE_URL}/api/auth/login`, {
 		method: 'POST',
 		headers: {
@@ -78,15 +82,15 @@ export const refreshToken = async () => {
 	return checkResponse(response);
 };
 
-export const fetchWithRefresh = async (
+export const fetchWithRefresh = async <T>(
 	url: string,
 	options: RequestInit
-): Promise<any> => {
+): Promise<T> => {
 	try {
 		const res = await fetch(url, options);
 		return await checkResponse(res);
-	} catch (err: any) {
-		if (err.message === 'jwt expired') {
+	} catch (err: unknown) {
+		if (err instanceof Error && err.message === 'jwt expired') {
 			const refreshData = await refreshToken();
 			localStorage.setItem('accessToken', refreshData.accessToken);
 			localStorage.setItem('refreshToken', refreshData.refreshToken);
@@ -103,7 +107,7 @@ export const fetchWithRefresh = async (
 	}
 };
 
-export const getUserData = async (token: string) => {
+export const getUserData = async (token: string): Promise<UserResponse> => {
 	return await fetchWithRefresh(`${BASE_URL}/api/auth/user`, {
 		method: 'GET',
 		headers: {
@@ -116,7 +120,7 @@ export const getUserData = async (token: string) => {
 export const updateUserData = async (
 	token: string,
 	userData: { name: string; email: string }
-) => {
+): Promise<UserResponse> => {
 	return await fetchWithRefresh(`${BASE_URL}/api/auth/user`, {
 		method: 'PATCH',
 		headers: {
@@ -127,7 +131,7 @@ export const updateUserData = async (
 	});
 };
 
-export const logoutUser = async () => {
+export const logoutUser = async (): Promise<LogoutResponse> => {
 	const response = await fetch(`${BASE_URL}/api/auth/logout`, {
 		method: 'POST',
 		headers: {
