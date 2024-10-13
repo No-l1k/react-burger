@@ -19,17 +19,18 @@ const initialState: IngredientsState = {
 	isHighlighted: false,
 };
 
-export const fetchIngredients = createAsyncThunk(
-	'ingredients/fetchIngredients',
-	async () => {
-		const response = await fetch(`${BASE_URL}/api/ingredients`);
-		if (!response.ok) {
-			throw new Error(`HTTP error! Status: ${response.status}`);
-		}
-		const data = await checkResponse(response);
-		return data.data as IngredientType[];
+export const fetchIngredients = createAsyncThunk<
+	IngredientType[],
+	void,
+	{ rejectValue: string }
+>('ingredients/fetchIngredients', async () => {
+	const response = await fetch(`${BASE_URL}/api/ingredients`);
+	if (!response.ok) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
 	}
-);
+	const data = await checkResponse(response);
+	return data.data;
+});
 
 const ingredientsSlice = createSlice({
 	name: 'ingredients',
@@ -58,10 +59,13 @@ const ingredientsSlice = createSlice({
 				state.ingredients = action.payload;
 				state.loading = false;
 			})
-			.addCase(fetchIngredients.rejected, (state, action) => {
-				state.loading = false;
-				state.error = action.payload as string;
-			});
+			.addCase(
+				fetchIngredients.rejected,
+				(state, action: PayloadAction<string | undefined>) => {
+					state.loading = false;
+					state.error = action.payload || 'Ошибка загрузки ингредиентов';
+				}
+			);
 	},
 });
 

@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { resetPassword, resetPasswordWithToken } from './api';
+import { PasswordResetResponse } from '../utils/types';
 
 interface PasswordResetState {
 	status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -11,15 +12,20 @@ const initialState: PasswordResetState = {
 	error: null,
 };
 
-export const resetPasswordRequest = createAsyncThunk(
-	'password/reset',
-	async (email: string) => {
-		const data = await resetPassword(email);
-		return data;
-	}
-);
+export const resetPasswordRequest = createAsyncThunk<
+	PasswordResetResponse,
+	string,
+	{ rejectValue: string }
+>('password/reset', async (email: string) => {
+	const data = await resetPassword(email);
+	return data;
+});
 
-export const resetPasswordWithTokenRequest = createAsyncThunk(
+export const resetPasswordWithTokenRequest = createAsyncThunk<
+	PasswordResetResponse,
+	{ password: string; token: string },
+	{ rejectValue: string }
+>(
 	'password/resetWithToken',
 	async ({ password, token }: { password: string; token: string }) => {
 		const data = await resetPasswordWithToken(password, token);
@@ -42,7 +48,7 @@ const passwordResetSlice = createSlice({
 			})
 			.addCase(resetPasswordRequest.rejected, (state, action) => {
 				state.status = 'failed';
-				state.error = action.payload as string;
+				state.error = action.payload || 'Ошибка сброса пароля';
 			})
 			.addCase(resetPasswordWithTokenRequest.pending, (state) => {
 				state.status = 'loading';
@@ -53,7 +59,7 @@ const passwordResetSlice = createSlice({
 			})
 			.addCase(resetPasswordWithTokenRequest.rejected, (state, action) => {
 				state.status = 'failed';
-				state.error = action.payload as string;
+				state.error = action.payload || 'Ошибка сброса пароля';
 			});
 	},
 });
