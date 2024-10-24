@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import {
 	registerUser,
 	loginUser,
@@ -6,11 +6,7 @@ import {
 	getUserData,
 	updateUserData,
 } from './api';
-
-interface User {
-	email: string;
-	name: string;
-}
+import { AuthResponse, LogoutResponse, User } from '../utils/types';
 
 interface AuthState {
 	isAuthenticated: boolean;
@@ -22,6 +18,10 @@ interface AuthState {
 	initialUser: User | null;
 }
 
+type RootState = {
+	auth: AuthState;
+};
+
 const initialState: AuthState = {
 	isAuthenticated: !!localStorage.getItem('accessToken'),
 	loading: 'idle',
@@ -32,7 +32,11 @@ const initialState: AuthState = {
 	initialUser: null,
 };
 
-export const registerRequest = createAsyncThunk(
+export const registerRequest = createAsyncThunk<
+	AuthResponse,
+	{ email: string; password: string; name: string },
+	{ rejectValue: string }
+>(
 	'auth/register',
 	async ({
 		email,
@@ -48,7 +52,11 @@ export const registerRequest = createAsyncThunk(
 	}
 );
 
-export const loginRequest = createAsyncThunk(
+export const loginRequest = createAsyncThunk<
+	AuthResponse,
+	{ email: string; password: string },
+	{ rejectValue: string }
+>(
 	'auth/login',
 	async ({ email, password }: { email: string; password: string }) => {
 		const data = await loginUser(email, password);
@@ -58,26 +66,31 @@ export const loginRequest = createAsyncThunk(
 	}
 );
 
-export const getUserDataRequest = createAsyncThunk(
-	'auth/getUserData',
-	async (_, thunkAPI) => {
-		const state = thunkAPI.getState() as { auth: AuthState };
-		const accessToken =
-			state.auth.accessToken || localStorage.getItem('accessToken');
+export const getUserDataRequest = createAsyncThunk<
+	User,
+	void,
+	{ state: RootState; rejectValue: string }
+>('auth/getUserData', async (_, thunkAPI) => {
+	const state = thunkAPI.getState();
+	const accessToken =
+		state.auth.accessToken || localStorage.getItem('accessToken');
 
-		if (!accessToken) {
-			return thunkAPI.rejectWithValue('No access token found');
-		}
-
-		const response = await getUserData(accessToken);
-		return response.user;
+	if (!accessToken) {
+		return thunkAPI.rejectWithValue('No access token found');
 	}
-);
 
-export const updateUserDataRequest = createAsyncThunk(
+	const response = await getUserData(accessToken);
+	return response.user;
+});
+
+export const updateUserDataRequest = createAsyncThunk<
+	User,
+	{ name: string; email: string },
+	{ state: RootState; rejectValue: string }
+>(
 	'auth/updateUserData',
 	async (userData: { name: string; email: string }, thunkAPI) => {
-		const state = thunkAPI.getState() as { auth: AuthState };
+		const state = thunkAPI.getState();
 		const accessToken =
 			state.auth.accessToken || localStorage.getItem('accessToken');
 
@@ -90,7 +103,11 @@ export const updateUserDataRequest = createAsyncThunk(
 	}
 );
 
-export const logoutRequest = createAsyncThunk('auth/logout', async () => {
+export const logoutRequest = createAsyncThunk<
+	LogoutResponse,
+	void,
+	{ rejectValue: string }
+>('auth/logout', async () => {
 	const data = await logoutUser();
 	localStorage.removeItem('refreshToken');
 	localStorage.removeItem('accessToken');
@@ -111,24 +128,33 @@ const authSlice = createSlice({
 				state.loading = 'succeeded';
 				state.isAuthenticated = true;
 			})
-			.addCase(registerRequest.rejected, (state, action) => {
-				state.loading = 'failed';
-				state.error = action.payload as string;
-			})
+			.addCase(
+				registerRequest.rejected,
+				(state, action: PayloadAction<string | undefined>) => {
+					state.loading = 'failed';
+					state.error = action.payload || 'Ошибка регистрации';
+				}
+			)
 			.addCase(loginRequest.pending, (state) => {
 				state.loading = 'loading';
 				state.error = null;
 			})
-			.addCase(loginRequest.fulfilled, (state, action) => {
-				state.loading = 'succeeded';
-				state.isAuthenticated = true;
-				state.accessToken = action.payload.accessToken;
-				state.refreshToken = action.payload.refreshToken;
-			})
-			.addCase(loginRequest.rejected, (state, action) => {
-				state.loading = 'failed';
-				state.error = action.payload as string;
-			})
+			.addCase(
+				loginRequest.fulfilled,
+				(state, action: PayloadAction<AuthResponse>) => {
+					state.loading = 'succeeded';
+					state.isAuthenticated = true;
+					state.accessToken = action.payload.accessToken;
+					state.refreshToken = action.payload.refreshToken;
+				}
+			)
+			.addCase(
+				loginRequest.rejected,
+				(state, action: PayloadAction<string | undefined>) => {
+					state.loading = 'failed';
+					state.error = action.payload || 'Ошибка входа';
+				}
+			)
 			.addCase(logoutRequest.pending, (state) => {
 				state.loading = 'loading';
 				state.error = null;
@@ -139,10 +165,13 @@ const authSlice = createSlice({
 				state.accessToken = null;
 				state.refreshToken = null;
 			})
-			.addCase(logoutRequest.rejected, (state, action) => {
-				state.loading = 'failed';
-				state.error = action.payload as string;
-			})
+			.addCase(
+				logoutRequest.rejected,
+				(state, action: PayloadAction<string | undefined>) => {
+					state.loading = 'failed';
+					state.error = action.payload || 'Ошибка выхода';
+				}
+			)
 			.addCase(getUserDataRequest.pending, (state) => {
 				state.loading = 'loading';
 				state.error = null;
@@ -154,10 +183,14 @@ const authSlice = createSlice({
 				state.user = action.payload;
 				state.initialUser = action.payload;
 			})
-			.addCase(getUserDataRequest.rejected, (state, action) => {
-				state.loading = 'failed';
-				state.error = action.payload as string;
-			})
+			.addCase(
+				getUserDataRequest.rejected,
+				(state, action: PayloadAction<string | undefined>) => {
+					state.loading = 'failed';
+					state.error =
+						action.payload || 'Ошибка получения данных пользователя';
+				}
+			)
 			.addCase(updateUserDataRequest.pending, (state) => {
 				state.loading = 'loading';
 				state.error = null;
@@ -167,10 +200,14 @@ const authSlice = createSlice({
 				state.user = action.payload;
 				state.error = null;
 			})
-			.addCase(updateUserDataRequest.rejected, (state, action) => {
-				state.loading = 'failed';
-				state.error = action.payload as string;
-			});
+			.addCase(
+				updateUserDataRequest.rejected,
+				(state, action: PayloadAction<string | undefined>) => {
+					state.loading = 'failed';
+					state.error =
+						action.payload || 'Ошибка обновления данных пользователя';
+				}
+			);
 	},
 });
 

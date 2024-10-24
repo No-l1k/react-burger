@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { BASE_URL, fetchWithRefresh } from './api';
 import { RootState } from './store';
+import { OrderResponse } from '../utils/types';
 
 interface OrderState {
 	orderNumber: number | null;
@@ -17,12 +18,12 @@ const initialState: OrderState = {
 export const orderRequest = createAsyncThunk<
 	number,
 	string[],
-	{ state: RootState }
+	{ state: RootState; rejectValue: string }
 >('order/placeOrder', async (ingredientIds, { getState }) => {
 	const state = getState();
 	const token = state.auth.accessToken;
 
-	const data = await fetchWithRefresh(`${BASE_URL}/api/orders`, {
+	const data = await fetchWithRefresh<OrderResponse>(`${BASE_URL}/api/orders`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -33,6 +34,7 @@ export const orderRequest = createAsyncThunk<
 
 	return data.order.number;
 });
+
 const orderSlice = createSlice({
 	name: 'order',
 	initialState,
@@ -55,7 +57,7 @@ const orderSlice = createSlice({
 			})
 			.addCase(orderRequest.rejected, (state, action) => {
 				state.loading = false;
-				state.error = action.payload as string;
+				state.error = action.payload || 'Ошибка при создании заказа';
 			});
 	},
 });

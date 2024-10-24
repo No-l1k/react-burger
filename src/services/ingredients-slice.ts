@@ -3,18 +3,6 @@ import { IngredientType } from '../utils/types';
 import { checkResponse } from '../utils/helpers';
 import { BASE_URL } from './api';
 
-export const fetchIngredients = createAsyncThunk(
-	'ingredients/fetchIngredients',
-	async () => {
-		const response = await fetch(`${BASE_URL}/api/ingredients`);
-		if (!response.ok) {
-			throw new Error(`HTTP error! Status: ${response.status}`);
-		}
-		const data = await checkResponse(response);
-		return data.data as IngredientType[];
-	}
-);
-
 interface IngredientsState {
 	ingredients: IngredientType[];
 	loading: boolean;
@@ -30,6 +18,19 @@ const initialState: IngredientsState = {
 	currentIngredient: null,
 	isHighlighted: false,
 };
+
+export const fetchIngredients = createAsyncThunk<
+	IngredientType[],
+	void,
+	{ rejectValue: string }
+>('ingredients/fetchIngredients', async () => {
+	const response = await fetch(`${BASE_URL}/api/ingredients`);
+	if (!response.ok) {
+		throw new Error(`HTTP error! Status: ${response.status}`);
+	}
+	const data = await checkResponse(response);
+	return data.data;
+});
 
 const ingredientsSlice = createSlice({
 	name: 'ingredients',
@@ -58,10 +59,13 @@ const ingredientsSlice = createSlice({
 				state.ingredients = action.payload;
 				state.loading = false;
 			})
-			.addCase(fetchIngredients.rejected, (state, action) => {
-				state.loading = false;
-				state.error = action.payload as string;
-			});
+			.addCase(
+				fetchIngredients.rejected,
+				(state, action: PayloadAction<string | undefined>) => {
+					state.loading = false;
+					state.error = action.payload || 'Ошибка загрузки ингредиентов';
+				}
+			);
 	},
 });
 
