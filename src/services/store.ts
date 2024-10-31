@@ -21,6 +21,7 @@ const store = configureStore({
 		orderFeed:orderFeedSlice,
 	},
 	middleware: getDefaultMiddleware => getDefaultMiddleware().concat(orderHistoryWsMiddleware, ordersFeedWsMiddleware),
+
 });
 
 export default store;

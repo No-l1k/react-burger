@@ -11,19 +11,28 @@ import { ResetPassword } from '../../pages/reset-password/reset-password';
 import { Profile } from '../../pages/profile/profile';
 import { Ingredient } from '../../pages/ingredient/ingredient';
 import { Home } from '../../pages/home/home';
+<<<<<<< spint-5/step-1
 import { OrderFeed } from '../order-feed/order-feed';
 import ProtectedRouteElement from '../protected-route/protected-route';
 import { useEffect, useMemo } from 'react';
+=======
+import { OrderHistory } from '../../pages/order-history/order-history';
+import ProtectedRouteElement from '../protected-route/protected-route';
+import { useEffect } from 'react';
+>>>>>>> main
 import { useAppDispatch, useAppSelector } from '../../services/store';
 import { getUserDataRequest } from '../../services/auth-slice';
 import { Modal } from '../modal/modal';
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { fetchIngredients } from '../../services/ingredients-slice';
+<<<<<<< spint-5/step-1
 import { wsConnectOrderHistory, wsDisconnectOrderHistory } from '../../services/actions/order-history';
 import OrderDetails from '../order-details/order-details';
 import Order from '../../pages/order/order';
 import { wsConnectOrdersFeed, wsDisconnectOrdersFeed } from '../../services/actions/order-feed';
 import Feed from '../../pages/feed/feed';
+=======
+>>>>>>> main
 
 export const App = () => {
 	const location = useLocation();
@@ -31,6 +40,7 @@ export const App = () => {
 	const { isAuthenticated, accessToken } = useAppSelector(
 		(state) => state.auth
 	);
+<<<<<<< spint-5/step-1
 	const ordersFeed = useAppSelector((state) => state.orderFeed.orders);
 	const orders = useAppSelector((state) => state.orderHistory.orders);
 	const { ingredients } = useAppSelector((state) => state.ingredients);
@@ -47,6 +57,8 @@ export const App = () => {
 		}, new Map<string, { price: number; image: string; name: string }>());
 		return map;
 	}, [ingredients]);
+=======
+>>>>>>> main
 
 	useEffect(() => {
 		if (isAuthenticated && accessToken) {
@@ -58,6 +70,7 @@ export const App = () => {
 		dispatch(fetchIngredients());
 	}, [dispatch]);
 
+<<<<<<< spint-5/step-1
 	useEffect(() => {
 		dispatch(wsConnectOrderHistory());
 
@@ -74,6 +87,8 @@ export const App = () => {
 		};
 	}, [dispatch]);
 
+=======
+>>>>>>> main
 	const backgroundLocation = location.state?.fromModal
 		? location.state.backgroundLocation
 		: location;
@@ -84,7 +99,10 @@ export const App = () => {
 			<DndProvider backend={HTML5Backend}>
 				<Routes location={backgroundLocation}>
 					<Route path='/' element={<Home />} />
+<<<<<<< spint-5/step-1
 					<Route path="/feed" element={<Feed orders={ordersFeed} ingredientDataMap={ingredientDataMap} isProfileOrder={false} />} />
+=======
+>>>>>>> main
 					<Route
 						path='/login'
 						element={
@@ -121,6 +139,7 @@ export const App = () => {
 						path='/profile'
 						element={
 							<ProtectedRouteElement>
+<<<<<<< spint-5/step-1
 								<Profile ingredientDataMap={ingredientDataMap} isProfileOrder={true}/>
 							</ProtectedRouteElement>
 						}>
@@ -129,12 +148,25 @@ export const App = () => {
 							element={
 								<ProtectedRouteElement>
 									<OrderFeed orders={orders} ingredientDataMap={ingredientDataMap} isProfileOrder={true}/>
+=======
+								<Profile />
+							</ProtectedRouteElement>
+						}>
+						<Route
+							path='order-history'
+							element={
+								<ProtectedRouteElement>
+									<OrderHistory />
+>>>>>>> main
 								</ProtectedRouteElement>
 							}
 						/>
 					</Route>
+<<<<<<< spint-5/step-1
 					<Route path="/feed/:number" element={<Order ingredientDataMap={ingredientDataMap} />} />
 					<Route path="/profile/orders/:number" element={<Order ingredientDataMap={ingredientDataMap} />} />
+=======
+>>>>>>> main
 					<Route path='/ingredients/:id' element={<Ingredient />} />
 				</Routes>
 				{location.state?.fromModal && (
@@ -149,6 +181,7 @@ export const App = () => {
 						/>
 					</Routes>
 				)}
+<<<<<<< spint-5/step-1
 				{location.state?.fromModal && currentOrder && (
 					<Routes>
 						<Route
@@ -182,6 +215,8 @@ export const App = () => {
 					</Routes>
 				)}
 
+=======
+>>>>>>> main
 			</DndProvider>
 		</div>
 	);

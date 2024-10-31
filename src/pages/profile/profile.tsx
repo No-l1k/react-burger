@@ -6,6 +6,7 @@ import s from './profile.module.scss';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { OrderFeed } from '../../components/order-feed/order-feed';
+
 import {
 	getUserDataRequest,
 	logoutRequest,
@@ -20,6 +21,7 @@ interface ProfileProps {
 }
 
 export const Profile: React.FC<ProfileProps> = ({ ingredientDataMap, isProfileOrder }) => {
+
 	const location = useLocation();
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
@@ -59,6 +61,7 @@ export const Profile: React.FC<ProfileProps> = ({ ingredientDataMap, isProfileOr
 			</div>
 			<div>
 				{location.pathname === '/profile' ? <ProfileInfo /> : <OrderFeed orders={orders} ingredientDataMap={ingredientDataMap} isProfileOrder={isProfileOrder}/>}
+
 			</div>
 		</div>
 	);

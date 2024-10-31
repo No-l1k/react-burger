@@ -25,7 +25,6 @@ export const AppHeader = () => {
 	const handleFeedRedirect = () => {
 		navigate('/feed');
 	};
-
 	return (
 		<header className={s.head}>
 			<nav className={s.nav}>

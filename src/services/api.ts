@@ -2,6 +2,7 @@ import { checkResponse } from '../utils/helpers';
 import { AuthResponse, LogoutResponse, UserResponse } from '../utils/types';
 import { BASE_URL } from '../utils/constans';
 
+
 export const registerUser = async (
 	email: string,
 	password: string,
@@ -91,6 +92,7 @@ export const fetchWithRefresh = async <T>(
 		const response = await checkResponse(res);
 		return response;
 
+
 	} catch (err: unknown) {
 		if (err instanceof Error && err.message === 'jwt expired') {
 			const refreshData = await refreshToken();
@@ -101,7 +103,6 @@ export const fetchWithRefresh = async <T>(
 				...options.headers,
 				authorization: `Bearer ${refreshData.accessToken}`, 
 			};
-
 			const res = await fetch(url, options);
 			return await checkResponse(res);
 		} else {
@@ -109,7 +110,6 @@ export const fetchWithRefresh = async <T>(
 		}
 	}
 };
-
 
 export const getUserData = async (token: string): Promise<UserResponse> => {
 	return await fetchWithRefresh(`${BASE_URL}/api/auth/user`, {
