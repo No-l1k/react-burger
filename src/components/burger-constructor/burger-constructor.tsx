@@ -155,11 +155,7 @@ export const BurgerConstructor = () => {
 			</div>
 			{isModalOpen && (
 				<Modal onClose={closeModal}>
-<<<<<<< spint-5/step-1
 					<NewOrder
-=======
-					<OrderDetails
->>>>>>> main
 						orderNumber={orderNumber}
 						error={error}
 						loading={loading}
