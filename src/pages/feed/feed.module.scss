@@ -1,0 +1,12 @@
+.container {
+	display: flex;
+	justify-content: center;
+	margin-top: 40px;
+	width: 100%;
+}
+
+.feed_main {
+	display: flex;
+	flex-direction: row;
+	gap: 125px;
+}

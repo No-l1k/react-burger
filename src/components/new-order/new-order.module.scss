@@ -1,0 +1,38 @@
+.order_details {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 50px;
+	text-align: center;
+}
+
+.order_id {
+	text-shadow: 0 4px 32px rgb(51 51 255 / 50%), 0 0 8px rgb(51 51 255 / 25%),
+		0 0 16px rgb(51 51 255 / 25%);
+}
+
+.identifier {
+	margin-top: 10px;
+}
+
+.icon {
+	position: relative;
+	margin-top: 100px;
+}
+
+.icon::after {
+	position: absolute;
+	top: -50px;
+	left: -50px;
+	width: 120px;
+	height: 120px;
+	background-image: url('../../images/check_background.svg');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	content: '';
+}
+
+.order_info {
+	margin-top: 105px;
+}
