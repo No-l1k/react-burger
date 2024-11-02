@@ -37,8 +37,25 @@ const ordersFeedSlice = createSlice({
             state.total = action.payload.total;
             state.totalToday = action.payload.totalToday;
         },
+        wsConnecting(state) {
+        },
+        wsFeedOnMessage(state, action: PayloadAction<{ success: boolean; orders: Order[]; total: number; totalToday: number }>) {
+            if (action.payload.success) {
+                state.orders = action.payload.orders;
+                state.total = action.payload.total;
+                state.totalToday = action.payload.totalToday;
+            }
+        },
     },
 });
 
-export const { wsConnectionSuccess, wsConnectionError, wsConnectionClosed, wsGetOrders } = ordersFeedSlice.actions;
+export const {
+    wsConnectionSuccess,
+    wsConnectionError,
+    wsConnectionClosed,
+    wsGetOrders,
+    wsConnecting,
+    wsFeedOnMessage,
+} = ordersFeedSlice.actions;
+
 export default ordersFeedSlice.reducer;

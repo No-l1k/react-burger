@@ -19,10 +19,8 @@ import { getUserDataRequest } from '../../services/auth-slice';
 import { Modal } from '../modal/modal';
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { fetchIngredients } from '../../services/ingredients-slice';
-import { wsConnectOrderHistory, wsDisconnectOrderHistory } from '../../services/actions/order-history';
 import OrderDetails from '../order-details/order-details';
 import Order from '../../pages/order/order';
-import { wsConnectOrdersFeed, wsDisconnectOrdersFeed } from '../../services/actions/order-feed';
 import Feed from '../../pages/feed/feed';
 
 export const App = () => {
@@ -32,7 +30,7 @@ export const App = () => {
 		(state) => state.auth
 	);
 	const ordersFeed = useAppSelector((state) => state.orderFeed.orders);
-	const orders = useAppSelector((state) => state.orderHistory.orders);
+	const ordersHistory = useAppSelector((state) => state.orderHistory.orders);
 	const { ingredients } = useAppSelector((state) => state.ingredients);
 	const currentOrder = useAppSelector((state) => state.order.currentOrder);
 
@@ -56,22 +54,6 @@ export const App = () => {
 
 	useEffect(() => {
 		dispatch(fetchIngredients());
-	}, [dispatch]);
-
-	useEffect(() => {
-		dispatch(wsConnectOrderHistory());
-
-		return () => {
-			dispatch(wsDisconnectOrderHistory());
-		};
-	}, [dispatch]);
-
-	useEffect(() => {
-		dispatch(wsConnectOrdersFeed());
-
-		return () => {
-			dispatch(wsDisconnectOrdersFeed());
-		};
 	}, [dispatch]);
 
 	const backgroundLocation = location.state?.fromModal
@@ -121,21 +103,21 @@ export const App = () => {
 						path='/profile'
 						element={
 							<ProtectedRouteElement>
-								<Profile ingredientDataMap={ingredientDataMap} isProfileOrder={true}/>
+								<Profile orders={ordersHistory} ingredientDataMap={ingredientDataMap} isProfileOrder={true} />
 							</ProtectedRouteElement>
 						}>
 						<Route
 							path='orders'
 							element={
 								<ProtectedRouteElement>
-									<OrderFeed orders={orders} ingredientDataMap={ingredientDataMap} isProfileOrder={true}/>
+									<OrderFeed orders={ordersHistory} ingredientDataMap={ingredientDataMap} isProfileOrder={true} />
 								</ProtectedRouteElement>
 							}
 						/>
 					</Route>
+					<Route path='/ingredients/:id' element={<Ingredient />} />
 					<Route path="/feed/:number" element={<Order ingredientDataMap={ingredientDataMap} />} />
 					<Route path="/profile/orders/:number" element={<Order ingredientDataMap={ingredientDataMap} />} />
-					<Route path='/ingredients/:id' element={<Ingredient />} />
 				</Routes>
 				{location.state?.fromModal && (
 					<Routes>
@@ -149,19 +131,21 @@ export const App = () => {
 						/>
 					</Routes>
 				)}
-				{location.state?.fromModal && currentOrder && (
+				{location.state?.fromModal && location.state.orderDetails && (
 					<Routes>
 						<Route
 							path="/profile/orders/:number"
 							element={
 								<Modal onClose={() => window.history.back()}>
-									<OrderDetails
-										orderNumber={currentOrder.orderNumber}
-										orderName={currentOrder.orderName}
-										ingredients={currentOrder.ingredients}
-										totalPrice={currentOrder.totalPrice}
-										orderDate={currentOrder.orderDate}
-									/>
+									<ProtectedRouteElement>
+										<OrderDetails
+											orderNumber={location.state.orderDetails.orderNumber}
+											orderName={location.state.orderDetails.orderName}
+											ingredients={location.state.orderDetails.ingredients}
+											totalPrice={location.state.orderDetails.totalPrice}
+											orderDate={location.state.orderDetails.orderDate}
+										/>
+									</ProtectedRouteElement>
 								</Modal>
 							}
 						/>
@@ -170,18 +154,17 @@ export const App = () => {
 							element={
 								<Modal onClose={() => window.history.back()}>
 									<OrderDetails
-										orderNumber={currentOrder.orderNumber}
-										orderName={currentOrder.orderName}
-										ingredients={currentOrder.ingredients}
-										totalPrice={currentOrder.totalPrice}
-										orderDate={currentOrder.orderDate}
+										orderNumber={location.state.orderDetails.orderNumber}
+										orderName={location.state.orderDetails.orderName}
+										ingredients={location.state.orderDetails.ingredients}
+										totalPrice={location.state.orderDetails.totalPrice}
+										orderDate={location.state.orderDetails.orderDate}
 									/>
 								</Modal>
 							}
 						/>
 					</Routes>
 				)}
-
 			</DndProvider>
 		</div>
 	);

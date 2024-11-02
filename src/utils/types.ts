@@ -71,7 +71,7 @@ export interface Order {
 	updatedAt: string;
 	number: number;
 	totalPrice?: number;
-	orderDate: Date;
+	orderDate: string;
 }
 
 export interface OrderResponse {
@@ -99,5 +99,12 @@ export interface OrderDetailsProps {
 	orderName: string;
 	ingredients: { ingredient: IngredientDetailsId; quantity: number }[];
 	totalPrice: number;
-	orderDate: Date;
+	orderDate: string;
 }
+
+export interface IWsMessage {
+    orders?: Array<Order>;
+    success?: boolean;
+    message?: string;
+}
+

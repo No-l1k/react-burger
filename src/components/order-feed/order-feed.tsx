@@ -2,10 +2,12 @@ import Scrollbars from "react-custom-scrollbars-2";
 import s from './order-feed.module.scss';
 import { IngredientData, Order, OrderDetailsProps } from '../../utils/types';
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useAppDispatch } from '../../services/store';
+import { useAppDispatch, useAppSelector } from '../../services/store';
 import { setCurrentOrder } from '../../services/order-slice';
 import { calculateTotalPrice, transformIngredients } from '../../utils/helpers';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from "react";
+import { WebSocket_URL, wsActions } from "../../utils/constans";
 
 interface OrderFeedProps {
     orders: Order[];
@@ -17,29 +19,45 @@ export const OrderFeed: React.FC<OrderFeedProps> = ({ orders, ingredientDataMap,
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-
+    const accessToken = useAppSelector(state => state.auth.accessToken);
+    
     const handleOrderClick = (order: Order) => {
         const transformedIngredients = transformIngredients(order, ingredientDataMap);
         const totalPrice = calculateTotalPrice(transformedIngredients);
-
+    
         const orderDetails: OrderDetailsProps = {
             orderNumber: order.number,
             orderName: order.name,
             ingredients: transformedIngredients,
             totalPrice: totalPrice,
-            orderDate: new Date(order.createdAt),
+            orderDate: order.createdAt,
         };
-
-        dispatch(setCurrentOrder(orderDetails));
-
+    
         const path = isProfileOrder
             ? `/profile/orders/${order.number}`
             : `/feed/${order.number}`;
-
+    
         navigate(path, {
-            state: { fromModal: true, backgroundLocation: location },
+            state: { fromModal: true, orderDetails, backgroundLocation: location },
         });
     };
+
+
+
+    useEffect(() => {
+        if (!accessToken) {
+            console.error("No access token found");
+            return;
+        }
+        const url = isProfileOrder
+            ? `${WebSocket_URL}/orders?token=${accessToken.replace('Bearer ', '')}`
+            : `${WebSocket_URL}/orders/all`;
+
+        dispatch(wsActions.connect(url)); 
+        return () => {
+            dispatch(wsActions.disconnect()); 
+        };
+    }, [dispatch, isProfileOrder, accessToken]);
 
     return (
         <Scrollbars

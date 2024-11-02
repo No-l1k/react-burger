@@ -13,20 +13,20 @@ import {
 	updateUserDataRequest,
 } from '../../services/auth-slice';
 import { useAppDispatch, useAppSelector } from '../../services/store';
-import { IngredientDataMap } from '../../utils/types';
+import { IngredientDataMap, Order } from '../../utils/types';
 
 interface ProfileProps {
 	ingredientDataMap: IngredientDataMap;
 	isProfileOrder: boolean; 
+	orders:Order[];
 }
 
-export const Profile: React.FC<ProfileProps> = ({ ingredientDataMap, isProfileOrder }) => {
+export const Profile: React.FC<ProfileProps> = ({ ingredientDataMap, isProfileOrder,orders }) => {
 
 	const location = useLocation();
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 
-	const orders = useAppSelector((state) => state.orderHistory.orders);
 
 	const handleLogout = () => {
 		dispatch(logoutRequest()).then((result) => {

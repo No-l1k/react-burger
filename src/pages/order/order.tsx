@@ -71,7 +71,7 @@ const Order: React.FC<OrderProps> = ({ ingredientDataMap }) => {
             orderName: order.name,
             ingredients: transformedIngredients,
             totalPrice: totalPrice,
-            orderDate: new Date(order.createdAt),
+            orderDate: order.createdAt,
         };
 
         return (

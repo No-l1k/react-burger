@@ -30,7 +30,7 @@ const OrderDetails: React.FC<OrderDetailsProps> = ({ orderNumber, orderName, ing
 			</Scrollbars>
 
 			<div className={s.footer}>
-				<FormattedDate date={orderDate} className='text text_type_main-default text_color_inactive' />
+				<FormattedDate date={new Date(orderDate)} className='text text_type_main-default text_color_inactive' />
 				<p className='text text_type_digits-default'>
 					{totalPrice} <CurrencyIcon type='primary' />
 				</p>

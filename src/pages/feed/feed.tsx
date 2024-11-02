@@ -1,9 +1,8 @@
-import { useSelector } from 'react-redux';
 import { OrderFeed } from '../../components/order-feed/order-feed';
 import OrdersSummary from '../../components/orders-status/orders-status';
 import { IngredientDataMap, Order } from '../../utils/types';
 import s from './feed.module.scss';
-import { RootState } from '../../services/store';
+import {  useAppSelector } from '../../services/store';
 
 interface FeedProps {
 	orders: Order[];
@@ -19,10 +18,10 @@ const Feed: React.FC<FeedProps> = ({
 	const doneOrders = orders.filter((order) => order.status === 'done');
 	const pendingOrders = orders.filter((order) => order.status === 'pending');
 
-	const totalOrders = useSelector((state: RootState) => state.orderFeed.total);
-	const totalToday = useSelector(
-		(state: RootState) => state.orderFeed.totalToday
+	const totalOrders = useAppSelector((state) => state.orderFeed.total);
+	const totalToday = useAppSelector((state) => state.orderFeed.totalToday
 	);
+	
 
 	return (
 		<div className={s.container}>

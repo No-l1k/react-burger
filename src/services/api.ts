@@ -54,20 +54,22 @@ export const resetPasswordWithToken = async (
 
 	return checkResponse(response);
 };
-
 export const loginUser = async (
-	email: string,
-	password: string
+    email: string,
+    password: string
 ): Promise<AuthResponse> => {
-	const response = await fetch(`${BASE_URL}/api/auth/login`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ email, password }),
-	});
+    const response = await fetch(`${BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+    });
 
-	return checkResponse(response);
+    const data = await checkResponse(response);
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
+    return data;
 };
 
 export const refreshToken = async () => {
