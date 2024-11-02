@@ -32,8 +32,6 @@ export const App = () => {
 	const ordersFeed = useAppSelector((state) => state.orderFeed.orders);
 	const ordersHistory = useAppSelector((state) => state.orderHistory.orders);
 	const { ingredients } = useAppSelector((state) => state.ingredients);
-	const currentOrder = useAppSelector((state) => state.order.currentOrder);
-
 	const ingredientDataMap = useMemo(() => {
 		const map = ingredients.reduce((acc, ingredient) => {
 			acc.set(ingredient._id, {

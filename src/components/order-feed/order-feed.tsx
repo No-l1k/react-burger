@@ -3,7 +3,6 @@ import s from './order-feed.module.scss';
 import { IngredientData, Order, OrderDetailsProps } from '../../utils/types';
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useAppDispatch, useAppSelector } from '../../services/store';
-import { setCurrentOrder } from '../../services/order-slice';
 import { calculateTotalPrice, transformIngredients } from '../../utils/helpers';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from "react";
