@@ -44,17 +44,19 @@ export const OrderFeed: React.FC<OrderFeedProps> = ({ orders, ingredientDataMap,
 
 
     useEffect(() => {
-        if (!accessToken) {
-            console.error("No access token found");
+        const url = isProfileOrder
+            ? `${WebSocket_URL}/orders?token=${accessToken?.replace('Bearer ', '')}`
+            : `${WebSocket_URL}/orders/all`;
+    
+        if (isProfileOrder && !accessToken) {
+            console.error("No access token found for profile order feed.");
             return;
         }
-        const url = isProfileOrder
-            ? `${WebSocket_URL}/orders?token=${accessToken.replace('Bearer ', '')}`
-            : `${WebSocket_URL}/orders/all`;
-
-        dispatch(wsActions.connect(url)); 
+    
+        dispatch(wsActions.connect(url));
+    
         return () => {
-            dispatch(wsActions.disconnect()); 
+            dispatch(wsActions.disconnect());
         };
     }, [dispatch, isProfileOrder, accessToken]);
 

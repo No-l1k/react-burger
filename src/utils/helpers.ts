@@ -23,18 +23,28 @@ export const transformIngredients = (
     selectedOrder: Order | null,
     ingredientDataMap: Map<string, IngredientData>
 ): TransformedIngredient[] => {
-    return selectedOrder && selectedOrder.ingredients.length > 0
-        ? selectedOrder.ingredients.map((ingredientId, index) => {
-            const ingredient = ingredientDataMap.get(ingredientId);
-            const isBun = index === 0;  
+    if (!selectedOrder || selectedOrder.ingredients.length === 0) {
+        return [];
+    }
 
-            return ingredient ? {
-                ingredient,
-                quantity: isBun ? 2 : selectedOrder.ingredients.filter(id => id === ingredientId).length
-            } : null;
-        }).filter((item): item is TransformedIngredient => item !== null)
-        : [];
+    const ingredientCountMap = new Map<string, number>();
+
+    selectedOrder.ingredients.forEach(ingredientId => {
+        const currentCount = ingredientCountMap.get(ingredientId) || 0;
+        ingredientCountMap.set(ingredientId, currentCount + 1);
+    });
+
+    return Array.from(ingredientCountMap.entries()).map(([ingredientId, count], index) => {
+        const ingredient = ingredientDataMap.get(ingredientId);
+        const isBun = index === 0;
+
+        return ingredient ? {
+            ingredient,
+            quantity: isBun ? 2 : count
+        } : null;
+    }).filter((item): item is TransformedIngredient => item !== null);
 };
+
 
 export const calculateTotalPrice = (ingredients: TransformedIngredient[]): number => {
     return ingredients.reduce((acc, curr) => {
