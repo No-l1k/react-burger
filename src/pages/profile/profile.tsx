@@ -5,18 +5,28 @@ import {
 import s from './profile.module.scss';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { OrderHistory } from '../order-history/order-history';
+import { OrderFeed } from '../../components/order-feed/order-feed';
+
 import {
 	getUserDataRequest,
 	logoutRequest,
 	updateUserDataRequest,
 } from '../../services/auth-slice';
 import { useAppDispatch, useAppSelector } from '../../services/store';
+import { IngredientDataMap, Order } from '../../utils/types';
 
-export const Profile = () => {
+interface ProfileProps {
+	ingredientDataMap: IngredientDataMap;
+	isProfileOrder: boolean; 
+	orders:Order[];
+}
+
+export const Profile: React.FC<ProfileProps> = ({ ingredientDataMap, isProfileOrder,orders }) => {
+
 	const location = useLocation();
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
+
 
 	const handleLogout = () => {
 		dispatch(logoutRequest()).then((result) => {
@@ -37,9 +47,9 @@ export const Profile = () => {
 					Профиль
 				</NavLink>
 				<NavLink
-					to='/profile/order-history'
+					to='/profile/orders'
 					className={
-						location.pathname === '/profile/order-history'
+						location.pathname === '/profile/orders'
 							? `${s.link} ${s.active}`
 							: s.link
 					}>
@@ -50,7 +60,8 @@ export const Profile = () => {
 				</span>
 			</div>
 			<div>
-				{location.pathname === '/profile' ? <ProfileInfo /> : <OrderHistory />}
+				{location.pathname === '/profile' ? <ProfileInfo /> : <OrderFeed orders={orders} ingredientDataMap={ingredientDataMap} isProfileOrder={isProfileOrder}/>}
+
 			</div>
 		</div>
 	);

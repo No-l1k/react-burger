@@ -1,7 +1,7 @@
 import { checkResponse } from '../utils/helpers';
 import { AuthResponse, LogoutResponse, UserResponse } from '../utils/types';
+import { BASE_URL } from '../utils/constans';
 
-export const BASE_URL = 'https://norma.nomoreparties.space';
 
 export const registerUser = async (
 	email: string,
@@ -54,20 +54,22 @@ export const resetPasswordWithToken = async (
 
 	return checkResponse(response);
 };
-
 export const loginUser = async (
-	email: string,
-	password: string
+    email: string,
+    password: string
 ): Promise<AuthResponse> => {
-	const response = await fetch(`${BASE_URL}/api/auth/login`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ email, password }),
-	});
+    const response = await fetch(`${BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+    });
 
-	return checkResponse(response);
+    const data = await checkResponse(response);
+    localStorage.setItem('accessToken', data.accessToken);
+    localStorage.setItem('refreshToken', data.refreshToken);
+    return data;
 };
 
 export const refreshToken = async () => {
@@ -88,7 +90,11 @@ export const fetchWithRefresh = async <T>(
 ): Promise<T> => {
 	try {
 		const res = await fetch(url, options);
-		return await checkResponse(res);
+
+		const response = await checkResponse(res);
+		return response;
+
+
 	} catch (err: unknown) {
 		if (err instanceof Error && err.message === 'jwt expired') {
 			const refreshData = await refreshToken();
@@ -97,7 +103,7 @@ export const fetchWithRefresh = async <T>(
 
 			options.headers = {
 				...options.headers,
-				authorization: refreshData.accessToken,
+				authorization: `Bearer ${refreshData.accessToken}`, 
 			};
 			const res = await fetch(url, options);
 			return await checkResponse(res);

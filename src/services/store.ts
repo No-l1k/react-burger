@@ -5,6 +5,10 @@ import orderSlice from './order-slice';
 import { useDispatch, useSelector } from 'react-redux';
 import passwordResetSlice from './password-reset-slice';
 import authSlice from './auth-slice';
+import orderHistorySlice from './order-history-slice'
+import orderFeedSlice from './order-feed-slice'
+import { socketMiddleware } from './middleware/socket-middleware';
+import { wsActions } from '../utils/constans';
 
 const store = configureStore({
 	reducer: {
@@ -13,7 +17,11 @@ const store = configureStore({
 		order: orderSlice,
 		passwordReset: passwordResetSlice,
 		auth: authSlice,
+		orderHistory: orderHistorySlice,
+		orderFeed: orderFeedSlice,
 	},
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(socketMiddleware(wsActions)),
 });
 
 export default store;

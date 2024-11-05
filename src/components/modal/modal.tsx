@@ -8,7 +8,9 @@ interface ModalProps {
 	title?: string;
 	onClose: () => void;
 	children: React.ReactNode;
+	isOrderNumberTitle?: boolean;
 }
+
 
 export const Modal: React.FC<ModalProps> = ({ title, onClose, children }) => {
 	useEffect(() => {
@@ -27,7 +29,13 @@ export const Modal: React.FC<ModalProps> = ({ title, onClose, children }) => {
 		<ModalOverlay onClick={onClose}>
 			<div className={s.modal_content} onClick={(e) => e.stopPropagation()}>
 				<div className={s.modal_header}>
-					{title && <h2 className='text text_type_main-large'>{title}</h2>}
+					{title && (
+						<h2
+							className={'text text_type_main-large'}
+						>
+							{title}
+						</h2>
+					)}
 					<span className={s.button_container}>
 						<CloseIcon type='primary' onClick={onClose} />
 					</span>

@@ -1,49 +1,42 @@
 import React from 'react';
-import { CheckMarkIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import s from './order-details.module.scss';
-import { Loader } from '../loader/loader';
+import Scrollbars from "react-custom-scrollbars-2";
+import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components';
+import { OrderDetailsProps } from '../../utils/types';
 
-interface OrderDetailsProps {
-	orderNumber: number | null;
-	error: string | null;
-	loading: boolean;
-}
 
-export const OrderDetails: React.FC<OrderDetailsProps> = ({
-	orderNumber,
-	error,
-	loading,
-}) => {
-	if (loading) {
-		return <Loader />;
-	}
+const OrderDetails: React.FC<OrderDetailsProps> = ({ orderNumber, orderName, ingredients, totalPrice, orderDate }) => {
+
 	return (
-		<div className={s.order_details}>
-			{error ? (
-				<p className={`text text_type_digits-large ${s.order_id}`}>
-					Ошибка: {error}
+		<div className={s.orderDetails}>
+			<h2 className={`text text_type_digits-default ${s.order_number}`}>#{orderNumber}</h2>
+			<p className='text text_type_main-medium'>{orderName}</p>
+			<h3 className='text text_type_main-medium'>Состав:</h3>
+
+			<Scrollbars className={s.scroll} renderThumbVertical={(props) => <div className={s.thumb} {...props} />}			>
+				<ul className={s.ingredientList}>
+					{ingredients.map(({ ingredient, quantity }, index) => (
+						<li key={`${ingredient._id}-${index}`} className={s.ingredientItem}>
+							<div className={s.imageWrapper}>
+								<img src={ingredient.image} alt={ingredient.name} className={s.ingredientImage} />
+							</div>
+							<p className={`text text_type_main-default ${s.ingredientName}`}>{ingredient.name}</p>
+							<p className='text text_type_digits-default'>
+								{quantity} x {ingredient.price} <CurrencyIcon type='primary' />
+							</p>
+						</li>
+					))}
+				</ul>
+			</Scrollbars>
+
+			<div className={s.footer}>
+				<FormattedDate date={new Date(orderDate)} className='text text_type_main-default text_color_inactive' />
+				<p className='text text_type_digits-default'>
+					{totalPrice} <CurrencyIcon type='primary' />
 				</p>
-			) : (
-				<>
-					<p className={`text text_type_digits-large ${s.order_id}`}>
-						{orderNumber}
-					</p>
-					<p className={`text text_type_main-medium ${s.identifier}`}>
-						идентификатор заказа
-					</p>
-					<div className={s.icon}>
-						<CheckMarkIcon type='primary' />
-					</div>
-					<div className={s.order_info}>
-						<p className='text text_type_main-default'>
-							Ваш заказ начали готовить
-						</p>
-						<p className='text text_type_main-default text_color_inactive'>
-							Дождитесь готовности на орбитальной станции
-						</p>
-					</div>
-				</>
-			)}
+			</div>
 		</div>
 	);
 };
+
+export default OrderDetails;

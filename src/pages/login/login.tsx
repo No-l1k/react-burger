@@ -6,8 +6,7 @@ import {
 import { useEffect, useState } from 'react';
 import s from './login.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState, useAppDispatch } from '../../services/store';
+import { RootState, useAppDispatch, useAppSelector } from '../../services/store';
 import { loginRequest } from '../../services/auth-slice';
 
 export const Login = () => {
@@ -17,7 +16,7 @@ export const Login = () => {
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 
-	const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+	const { isAuthenticated } = useAppSelector((state) => state.auth);
 
 	useEffect(() => {
 		if (isAuthenticated) {

@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { IngredientType } from '../utils/types';
 import { checkResponse } from '../utils/helpers';
-import { BASE_URL } from './api';
+import { BASE_URL } from '../utils/constans';
+
 
 interface IngredientsState {
 	ingredients: IngredientType[];

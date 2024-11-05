@@ -8,7 +8,7 @@ import {
 import { Scrollbars } from 'react-custom-scrollbars-2';
 import s from './burger-constructor.module.scss';
 import { Modal } from '../modal/modal';
-import { OrderDetails } from '../order-details/order-details';
+import { NewOrder } from '../new-order/new-order';
 import { useModal } from '../../hooks/use-modal';
 import { useAppDispatch, useAppSelector } from '../../services/store';
 import {
@@ -155,7 +155,7 @@ export const BurgerConstructor = () => {
 			</div>
 			{isModalOpen && (
 				<Modal onClose={closeModal}>
-					<OrderDetails
+					<NewOrder
 						orderNumber={orderNumber}
 						error={error}
 						loading={loading}

@@ -61,20 +61,50 @@ interface Owner {
 	updatedAt: string;
 }
 
-interface Order {
-	ingredients: IngredientType[];
+export interface Order {
+	ingredients: string[];
 	_id: string;
-	owner: Owner;
-	status: 'done';
+	owner?: Owner;
+	status: 'done' | 'pending' | 'created';
 	name: string;
 	createdAt: string;
 	updatedAt: string;
 	number: number;
-	price: number;
+	totalPrice?: number;
+	orderDate: string;
 }
 
 export interface OrderResponse {
 	success: boolean;
-	name: string;
+	orders: Order[];
 	order: Order;
+	total?: number;
+	totalToday?: number;
 }
+
+export interface IngredientData {
+	price: number;
+	image: string;
+	name: string;
+}
+
+export interface IngredientDetailsId extends IngredientData {
+	_id: string;
+}
+
+export type IngredientDataMap = Map<string, IngredientData>;
+
+export interface OrderDetailsProps {
+	orderNumber: number;
+	orderName: string;
+	ingredients: { ingredient: IngredientDetailsId; quantity: number }[];
+	totalPrice: number;
+	orderDate: string;
+}
+
+export interface IWsMessage {
+    orders?: Array<Order>;
+    success?: boolean;
+    message?: string;
+}
+

@@ -22,6 +22,9 @@ export const AppHeader = () => {
 		navigate('/profile');
 	};
 
+	const handleFeedRedirect = () => {
+		navigate('/feed');
+	};
 	return (
 		<header className={s.head}>
 			<nav className={s.nav}>
@@ -39,7 +42,7 @@ export const AppHeader = () => {
 						</button>
 					</span>
 					<span className={s.nav_list_item}>
-						<button className='text text_type_main-default'>
+						<button className='text text_type_main-default' onClick={handleFeedRedirect}>
 							<ListIcon type='secondary' />
 							Лента заказов
 						</button>
