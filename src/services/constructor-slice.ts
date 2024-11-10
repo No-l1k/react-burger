@@ -7,7 +7,7 @@ interface BurgerConstructorState {
 	ingredients: (IngredientType & { id: string; quantity: number })[];
 }
 
-const initialState: BurgerConstructorState = {
+export const initialState: BurgerConstructorState = {
 	bun: null,
 	ingredients: [],
 };

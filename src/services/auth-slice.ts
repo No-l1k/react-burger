@@ -22,7 +22,7 @@ type RootState = {
 	auth: AuthState;
 };
 
-const initialState: AuthState = {
+export const initialState: AuthState = {
 	isAuthenticated: !!localStorage.getItem('accessToken'),
 	loading: 'idle',
 	error: null,

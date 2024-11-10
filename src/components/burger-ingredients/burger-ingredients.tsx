@@ -181,7 +181,9 @@ const DraggableCard: React.FC<DraggableCardProps> = ({
 		<li
 			ref={dragRef}
 			className={s.ingredient_card}
-			onClick={() => onClick(ingredient)}>
+			onClick={() => onClick(ingredient)}
+			data-testid={`ingredient-${ingredient._id}`}
+			>
 			{count > 0 && <Counter count={count} size='default' extraClass='m-1' />}
 			<img
 				src={ingredient.image}

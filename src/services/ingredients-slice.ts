@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { IngredientType } from '../utils/types';
-import { checkResponse } from '../utils/helpers';
-import { BASE_URL } from '../utils/constans';
+import { getIngredients } from './api';
 
 
 interface IngredientsState {
@@ -12,7 +11,7 @@ interface IngredientsState {
 	isHighlighted: boolean;
 }
 
-const initialState: IngredientsState = {
+export const initialState: IngredientsState = {
 	ingredients: [],
 	loading: false,
 	error: null,
@@ -21,19 +20,18 @@ const initialState: IngredientsState = {
 };
 
 export const fetchIngredients = createAsyncThunk<
-	IngredientType[],
-	void,
-	{ rejectValue: string }
->('ingredients/fetchIngredients', async () => {
-	const response = await fetch(`${BASE_URL}/api/ingredients`);
-	if (!response.ok) {
-		throw new Error(`HTTP error! Status: ${response.status}`);
-	}
-	const data = await checkResponse(response);
-	return data.data;
+    IngredientType[],
+    void,
+    { rejectValue: string }
+>('ingredients/fetchIngredients', async (_, { rejectWithValue }) => {
+    try {
+        return await getIngredients();
+    } catch (error) {
+        return rejectWithValue('Не удалось загрузить ингредиенты');
+    }
 });
 
-const ingredientsSlice = createSlice({
+export const ingredientsSlice = createSlice({
 	name: 'ingredients',
 	initialState,
 	reducers: {

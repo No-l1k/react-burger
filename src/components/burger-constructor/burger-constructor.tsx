@@ -90,7 +90,9 @@ export const BurgerConstructor = () => {
 				className={`${s.drop_container} ${
 					isHighlighted ? s.drop_container_highlight : ''
 				}`}
-				ref={dropRef}>
+				ref={dropRef}
+				data-testid="constructor-drop-area"
+				>
 				{!bun ? (
 					<p className={`text text_type_main-large ${s.bun_container_top}`}>
 						Пожалуйста, для создания бургера перетащите в конструктор булку
@@ -98,6 +100,7 @@ export const BurgerConstructor = () => {
 				) : (
 					<ConstructorElement
 						extraClass={s.constructor_extra_element}
+						data-testid="top-bun"
 						type='top'
 						isLocked={true}
 						text={`${bun.name} (верх)`}
@@ -128,6 +131,7 @@ export const BurgerConstructor = () => {
 					<ConstructorElement
 						extraClass={s.constructor_extra_element}
 						type='bottom'
+						data-testid="bottom-bun"
 						isLocked={true}
 						text={`${bun.name} (низ)`}
 						price={bun.price}
