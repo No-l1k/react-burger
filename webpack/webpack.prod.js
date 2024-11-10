@@ -1,4 +1,11 @@
+const path = require('path');
+
 module.exports = {
 	mode: 'production',
-	devtool: false,
+	output: {
+	  path: path.resolve(__dirname, '../build'), 
+	  filename: 'static/scripts/[name].[contenthash].js',
+	  publicPath: '/react-burger/', 
+	  clean: true, 
+	},
 };
