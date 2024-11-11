@@ -1,6 +1,6 @@
 describe('Логика главной страницы', () => {
 	beforeEach(() => {
-		cy.visit("http://localhost:8080/");
+		cy.visit('/');
 		cy.intercept('GET', '/api/ingredients', { fixture: 'ingredients.json' }).as('getIngredients');
 	});
 
@@ -33,14 +33,14 @@ describe('Логика главной страницы', () => {
 
 	it('Открытие модального окна с описанием ингредиента', () => {
 		cy.get('[data-testid="ingredient-643d69a5c3f7b9001cfa093c"]').trigger('click');
-		cy.location('pathname').should('eq', '/ingredients/643d69a5c3f7b9001cfa093c');
+		cy.location('hash').should('eq', '#/ingredients/643d69a5c3f7b9001cfa093c');
 		cy.get('[data-testid="modal"]').should('exist');
 	});
 
 
 	it('Отображение в модальном окне данных ингредиента и закрытие окна', () => {
 		cy.get('[data-testid="ingredient-643d69a5c3f7b9001cfa093c"]').trigger('click');
-		cy.location('pathname').should('eq', '/ingredients/643d69a5c3f7b9001cfa093c');
+		cy.location('hash').should('eq', '#/ingredients/643d69a5c3f7b9001cfa093c');
 
 		cy.get('[data-testid="ingredient-details"]').as('ingredientDetails');
 		cy.get('@ingredientDetails')
@@ -75,11 +75,11 @@ describe('Логика главной страницы', () => {
 
 	it('Закрытие модального окна на Esc', () => {
 		cy.get('[data-testid="ingredient-643d69a5c3f7b9001cfa093c"]').trigger('click');
-		cy.location('pathname').should('eq', '/ingredients/643d69a5c3f7b9001cfa093c');
+		cy.location('hash').should('eq', '#/ingredients/643d69a5c3f7b9001cfa093c');
 		cy.get('[data-testid="modal"]').should('exist');
-		
+
 		cy.get('body').type('{esc}')
-	
+
 		cy.get('[data-testid="modal"]').should('not.exist');
 	});
 });
