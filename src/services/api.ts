@@ -1,7 +1,36 @@
 import { checkResponse } from '../utils/helpers';
-import { AuthResponse, LogoutResponse, UserResponse } from '../utils/types';
+import { AuthResponse, IngredientType, LogoutResponse, OrderDetailsProps, OrderResponse, UserResponse } from '../utils/types';
 import { BASE_URL } from '../utils/constans';
 
+export async function placeOrder(ingredientIds: string[], token: string): Promise<number> {
+    const data = await fetchWithRefresh<OrderResponse>(`${BASE_URL}/api/orders`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+        },
+        body: JSON.stringify({ ingredients: ingredientIds }),
+    });
+    return data.order.number;
+}
+
+export async function getOrderByNumber(orderNumber: string): Promise<OrderDetailsProps> {
+    const response = await fetch(`${BASE_URL}/api/orders/${orderNumber}`);
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message || 'Ошибка при получении заказа');
+    }
+    return data.orders[0];
+}
+
+export async function getIngredients(): Promise<IngredientType[]> {
+    const response = await fetch(`${BASE_URL}/api/ingredients`);
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.data;
+}
 
 export const registerUser = async (
 	email: string,

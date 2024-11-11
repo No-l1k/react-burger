@@ -7,7 +7,7 @@ interface PasswordResetState {
 	error: string | null;
 }
 
-const initialState: PasswordResetState = {
+export const initialState: PasswordResetState = {
 	status: 'idle',
 	error: null,
 };

@@ -9,7 +9,7 @@ interface OrdersFeedState {
     error: string | null;
 }
 
-const initialState: OrdersFeedState = {
+export const initialState: OrdersFeedState = {
     orders: [],
     total: 0,
     totalToday: 0,
@@ -17,7 +17,7 @@ const initialState: OrdersFeedState = {
     error: null,
 };
 
-const ordersFeedSlice = createSlice({
+export const ordersFeedSlice = createSlice({
     name: 'ordersFeed',
     initialState,
     reducers: {

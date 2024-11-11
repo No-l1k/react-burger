@@ -14,16 +14,16 @@ export const IngredientDetails: React.FC = () => {
 	}
 
 	return (
-		<div className={s.container}>
+		<div className={s.container} data-testid="ingredient-details">
 			<p className='text text_type_main-large'>Детали ингредиента</p>
-			<img src={ingredient.image_large} alt={ingredient.name} />
-			<p className='text text_type_main-medium'>{ingredient.name}</p>
+			<img src={ingredient.image_large} alt={ingredient.name} data-testid="ingredient-details-image"/>
+			<p className='text text_type_main-medium' data-testid="ingredient-details-name">{ingredient.name}</p>
 			<div className={s.ingredient_details}>
 				<div>
 					<p className='text text_type_main-small text_color_inactive'>
 						Калории, ккал
 					</p>
-					<p className='text text_type_digits-default text_color_inactive'>
+					<p className='text text_type_digits-default text_color_inactive' data-testid="ingredient-details-calories">
 						{ingredient.calories}
 					</p>
 				</div>
@@ -31,7 +31,7 @@ export const IngredientDetails: React.FC = () => {
 					<p className='text text_type_main-small text_color_inactive'>
 						Белки, г
 					</p>
-					<p className='text text_type_digits-default text_color_inactive'>
+					<p className='text text_type_digits-default text_color_inactive' data-testid="ingredient-details-proteins">
 						{ingredient.proteins}
 					</p>
 				</div>
@@ -39,7 +39,7 @@ export const IngredientDetails: React.FC = () => {
 					<p className='text text_type_main-small text_color_inactive'>
 						Жиры, г
 					</p>
-					<p className='text text_type_digits-default text_color_inactive'>
+					<p className='text text_type_digits-default text_color_inactive' data-testid="ingredient-details-fat">
 						{ingredient.fat}
 					</p>
 				</div>
@@ -47,7 +47,7 @@ export const IngredientDetails: React.FC = () => {
 					<p className='text text_type_main-small text_color_inactive'>
 						Углеводы, г
 					</p>
-					<p className='text text_type_digits-default text_color_inactive'>
+					<p className='text text_type_digits-default text_color_inactive' data-testid="ingredient-details-carbohydrates">
 						{ingredient.carbohydrates}
 					</p>
 				</div>

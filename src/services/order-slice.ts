@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { fetchWithRefresh } from './api';
-import { BASE_URL } from '../utils/constans';
+import { getOrderByNumber, placeOrder } from './api';
 import { RootState } from './store';
-import { Order, OrderDetailsProps, OrderResponse } from '../utils/types';
+import { OrderDetailsProps } from '../utils/types';
 
 interface OrderState {
     orderNumber: number | null;
@@ -11,7 +10,7 @@ interface OrderState {
     currentOrder: OrderDetailsProps | null;
 }
 
-const initialState: OrderState = {
+export const initialState: OrderState = {
     orderNumber: null,
     loading: false,
     error: null,
@@ -22,34 +21,23 @@ export const orderRequest = createAsyncThunk<
     number,
     string[],
     { state: RootState; rejectValue: string }
->('order/placeOrder', async (ingredientIds, { getState }) => {
-    const state = getState();
-    const token = state.auth.accessToken;
+>('order/placeOrder', async (ingredientIds, { getState, rejectWithValue }) => {
+    const token = getState().auth.accessToken;
+    
+    if (!token) {
+        return rejectWithValue('Нет токена.');
+    }
 
-    const data = await fetchWithRefresh<OrderResponse>(`${BASE_URL}/api/orders`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `${token}`,
-        },
-        body: JSON.stringify({ ingredients: ingredientIds }),
-    });
-
-    return data.order.number;
+    return await placeOrder(ingredientIds, token);
 });
 
 export const fetchOrderByNumber = createAsyncThunk<
     OrderDetailsProps,
     string,
-    { state: RootState; rejectValue: string }
+    { rejectValue: string }
 >('order/fetchOrderByNumber', async (orderNumber, { rejectWithValue }) => {
     try {
-        const response = await fetch(`${BASE_URL}/api/orders/${orderNumber}`);
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.message || 'Ошибка при получении заказа');
-        }
-        return data.orders[0];
+        return await getOrderByNumber(orderNumber);
     } catch (error) {
         return rejectWithValue('Не удалось загрузить заказ');
     }

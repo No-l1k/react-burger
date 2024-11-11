@@ -9,7 +9,7 @@ interface OrdersState {
   error: string | null;
 }
 
-const initialState: OrdersState = {
+export const initialState: OrdersState = {
   orders: [],
   total: 0,
   totalToday: 0,
@@ -17,7 +17,7 @@ const initialState: OrdersState = {
   error: null,
 };
 
-const orderHistorySlice = createSlice({
+export const orderHistorySlice = createSlice({
   name: 'orderHistory',
   initialState,
   reducers: {
